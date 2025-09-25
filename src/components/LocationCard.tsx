@@ -94,8 +94,8 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
       
       <div className="relative h-[600px]">
         {/* Main Image Carousel - Background */}
-        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center">
-          <div className="w-full h-full max-w-[600px] aspect-square mx-auto">
+        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center pl-[33.333%]">
+          <div className="w-full h-full aspect-square">
             <Carousel className="w-full h-full">
               <CarouselContent>
                 {images.map((image, index) => (
