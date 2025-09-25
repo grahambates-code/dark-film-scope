@@ -55,7 +55,7 @@ const LocationCard = ({
       <div className="bg-scout-surface-alt border-b border-scout-border p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <h1 className="font-bold text-scout-text text-4xl">{location.name}</h1>
-          <p className="text-scout-text-muted flex items-center gap-2">
+          <p className="text-scout-text-muted flex items-center gap-2 text-sm">
             <MapPin className="w-4 h-4" />
             {location.address}
           </p>
