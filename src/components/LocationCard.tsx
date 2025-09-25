@@ -54,7 +54,7 @@ const LocationCard = ({
       {/* Location Header with Key Details */}
       <div className="bg-scout-surface-alt border-b border-scout-border p-6 py-[10px]">
         <div className="flex items-start justify-between gap-4 mb-4">
-          <h1 className="font-bold text-scout-text text-4xl">{location.name}</h1>
+          <h1 className="font-bold text-scout-primary text-4xl">{location.name}</h1>
           <p className="text-scout-text-muted flex items-center gap-2 text-sm">
             <MapPin className="w-4 h-4" />
             {location.address}
@@ -121,7 +121,7 @@ const LocationCard = ({
               {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <div className="font-medium text-scout-text text-xl">{comment.author}</div>
+                      <div className="font-medium text-scout-primary text-xl">{comment.author}</div>
                       <div className="text-sm text-scout-text-muted">{comment.role}</div>
                     </div>
                     <div className="flex items-center gap-1">
