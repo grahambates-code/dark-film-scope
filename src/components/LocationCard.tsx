@@ -84,7 +84,7 @@ const LocationCard = ({
       
       <div className="relative h-[600px]">
         {/* Main Image Carousel - Background */}
-        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center pl-[40%]">
+        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center pl-[50%]">
           <div className="w-full h-full aspect-square">
             <Carousel className="w-full h-full">
               <CarouselContent>
@@ -107,7 +107,7 @@ const LocationCard = ({
         </div>
 
         {/* Comments Panel - Overlaying Left */}
-        <div className="absolute left-0 top-0 bottom-0 w-2/5 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
+        <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
@@ -119,7 +119,7 @@ const LocationCard = ({
               {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/80 backdrop-blur-sm border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <div className="font-medium text-scout-text text-base">{comment.author}</div>
+                      <div className="font-medium text-scout-text text-lg">{comment.author}</div>
                       <div className="text-sm text-scout-text-muted">{comment.role}</div>
                     </div>
                     <div className="flex items-center gap-1">
@@ -130,7 +130,7 @@ const LocationCard = ({
                     </div>
                   </div>
                   
-                  <p className="text-scout-text text-base leading-relaxed mb-3">
+                  <p className="text-scout-text text-lg leading-relaxed mb-3">
                     {comment.content}
                   </p>
                   
