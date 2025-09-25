@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { Star, MapPin, Camera, Clock } from 'lucide-react';
 interface Comment {
   id: string;
@@ -39,6 +39,7 @@ const LocationCard = ({
   isActive
 }: LocationCardProps) => {
   const [commentsScrolled, setCommentsScrolled] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const handleCommentsScroll = (scrollTop: number, maxScrollTop: number) => {
     const threshold = 50;
@@ -86,12 +87,24 @@ const LocationCard = ({
       <div className="relative h-[600px]">
         {/* Main Image Carousel - Background */}
         <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center pl-[50%]">
-          <div className="w-full h-full aspect-square">
-            <Carousel className="w-full h-full">
+          <div className="w-full h-full aspect-square relative">
+            <Carousel className="w-full h-full" setApi={setCarouselApi}>
               <CarouselContent>
                 {images.map((image, index) => <CarouselItem key={index}>
-                    <div className="aspect-square w-full">
+                    <div className="aspect-square w-full relative">
                       <img src={image} alt={`${location.name} - View ${index + 1}`} className="w-full h-full object-cover" />
+                      
+                      {/* Hot sides for navigation */}
+                      <div className="absolute inset-0 flex">
+                        <div 
+                          className="w-1/2 h-full cursor-pointer z-20" 
+                          onClick={() => carouselApi?.scrollPrev()}
+                        />
+                        <div 
+                          className="w-1/2 h-full cursor-pointer z-20" 
+                          onClick={() => carouselApi?.scrollNext()}
+                        />
+                      </div>
                     </div>
                   </CarouselItem>)}
               </CarouselContent>
