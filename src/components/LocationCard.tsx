@@ -89,7 +89,9 @@ const LocationCard = ({
             <Carousel className="w-full h-full">
               <CarouselContent>
                 {images.map((image, index) => <CarouselItem key={index}>
-                    <img src={image} alt={`${location.name} - View ${index + 1}`} className="w-full h-full object-cover" />
+                    <div className="aspect-square w-full">
+                      <img src={image} alt={`${location.name} - View ${index + 1}`} className="w-full h-full object-cover" />
+                    </div>
                   </CarouselItem>)}
               </CarouselContent>
               <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
