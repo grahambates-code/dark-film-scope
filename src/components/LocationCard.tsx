@@ -54,7 +54,7 @@ const LocationCard = ({
       {/* Location Header with Key Details */}
       <div className="bg-scout-surface-alt border-b border-scout-border p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
-          <h1 className="text-2xl font-bold text-scout-text">{location.name}</h1>
+          <h1 className="font-bold text-scout-text text-4xl">{location.name}</h1>
           <p className="text-scout-text-muted flex items-center gap-2">
             <MapPin className="w-4 h-4" />
             {location.address}
@@ -96,14 +96,8 @@ const LocationCard = ({
                       
                       {/* Hot sides for navigation */}
                       <div className="absolute inset-0 flex">
-                        <div 
-                          className="w-1/2 h-full cursor-pointer z-20" 
-                          onClick={() => carouselApi?.scrollPrev()}
-                        />
-                        <div 
-                          className="w-1/2 h-full cursor-pointer z-20" 
-                          onClick={() => carouselApi?.scrollNext()}
-                        />
+                        <div className="w-1/2 h-full cursor-pointer z-20" onClick={() => carouselApi?.scrollPrev()} />
+                        <div className="w-1/2 h-full cursor-pointer z-20" onClick={() => carouselApi?.scrollNext()} />
                       </div>
                     </div>
                   </CarouselItem>)}
@@ -119,10 +113,10 @@ const LocationCard = ({
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
-          const target = event.target as HTMLDivElement;
-          const maxScrollTop = target.scrollHeight - target.clientHeight;
-          handleCommentsScroll(target.scrollTop, maxScrollTop);
-        }}>
+            const target = event.target as HTMLDivElement;
+            const maxScrollTop = target.scrollHeight - target.clientHeight;
+            handleCommentsScroll(target.scrollTop, maxScrollTop);
+          }}>
             <div className="space-y-4 pr-2">
               {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
