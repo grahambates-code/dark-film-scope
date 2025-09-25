@@ -53,11 +53,13 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
     <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
       {/* Location Address Title */}
       <div className="bg-scout-surface-alt border-b border-scout-border p-6">
-        <h1 className="text-2xl font-bold text-scout-text mb-2">{location.name}</h1>
-        <p className="text-scout-text-muted flex items-center gap-2">
-          <MapPin className="w-4 h-4" />
-          {location.address}
-        </p>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-bold text-scout-text">{location.name}</h1>
+          <p className="text-scout-text-muted flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            {location.address}
+          </p>
+        </div>
       </div>
       
       <div className="flex h-[600px]">
