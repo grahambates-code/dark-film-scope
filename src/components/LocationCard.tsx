@@ -95,12 +95,12 @@ const LocationCard = ({
                     </div>
                   </CarouselItem>)}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
-              <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
+              <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 border-scout-border hover:bg-scout-surface-alt z-10" />
+              <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 border-scout-border hover:bg-scout-surface-alt z-10" />
             </Carousel>
           </div>
           <div className="absolute top-6 left-6 z-10">
-            <Badge variant="secondary" className="bg-scout-surface/80 backdrop-blur-sm text-scout-text border-scout-border">
+            <Badge variant="secondary" className="bg-scout-surface/80 text-scout-text border-scout-border">
               <MapPin className="w-3 h-3 mr-1" />
               {location.type}
             </Badge>
@@ -108,7 +108,7 @@ const LocationCard = ({
         </div>
 
         {/* Comments Panel - Bleeding Out */}
-        <div className="absolute -left-8 top-4 bottom-4 w-[55%] bg-transparent backdrop-blur-sm border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl">
+        <div className="absolute -left-8 top-4 bottom-4 w-[55%] bg-transparent border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
@@ -117,7 +117,7 @@ const LocationCard = ({
           handleCommentsScroll(target.scrollTop, maxScrollTop);
         }}>
             <div className="space-y-4 pr-2">
-              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 backdrop-blur-sm border border-scout-border/30 rounded-lg p-4">
+              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="font-medium text-scout-text text-xl">{comment.author}</div>
