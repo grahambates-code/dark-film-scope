@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Star, MapPin, Camera, Clock } from 'lucide-react';
-
 interface Comment {
   id: string;
   author: string;
@@ -13,7 +12,6 @@ interface Comment {
   timestamp: string;
   rating?: number;
 }
-
 interface LocationDetails {
   name: string;
   address: string;
@@ -27,7 +25,6 @@ interface LocationDetails {
   contact: string;
   dailyRate: string;
 }
-
 interface LocationCardProps {
   id: string;
   images: string[];
@@ -35,11 +32,14 @@ interface LocationCardProps {
   comments: Comment[];
   isActive: boolean;
 }
-
-const LocationCard = ({ images, location, comments, isActive }: LocationCardProps) => {
+const LocationCard = ({
+  images,
+  location,
+  comments,
+  isActive
+}: LocationCardProps) => {
   const [commentsScrolled, setCommentsScrolled] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
   const handleCommentsScroll = (scrollTop: number, maxScrollTop: number) => {
     const threshold = 50;
     if (scrollTop > threshold) {
@@ -48,9 +48,7 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
       setCommentsScrolled(false);
     }
   };
-
-  return (
-    <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
+  return <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
       {/* Location Header with Key Details */}
       <div className="bg-scout-surface-alt border-b border-scout-border p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
@@ -73,20 +71,12 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
           <div className="flex items-center gap-2">
             <span className="text-scout-text-muted">Permits:</span>
             <div className="flex flex-wrap gap-1">
-              {location.permits.slice(0, 3).map((permit, index) => (
-                <Badge 
-                  key={index} 
-                  variant="outline" 
-                  className="text-xs border-scout-border-light text-scout-text-muted"
-                >
+              {location.permits.slice(0, 3).map((permit, index) => <Badge key={index} variant="outline" className="text-xs border-scout-border-light text-scout-text-muted">
                   {permit}
-                </Badge>
-              ))}
-              {location.permits.length > 3 && (
-                <Badge variant="outline" className="text-xs border-scout-border-light text-scout-text-muted">
+                </Badge>)}
+              {location.permits.length > 3 && <Badge variant="outline" className="text-xs border-scout-border-light text-scout-text-muted">
                   +{location.permits.length - 3} more
-                </Badge>
-              )}
+                </Badge>}
             </div>
           </div>
         </div>
@@ -98,15 +88,9 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
           <div className="w-full h-full aspect-square">
             <Carousel className="w-full h-full">
               <CarouselContent>
-                {images.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <img 
-                      src={image} 
-                      alt={`${location.name} - View ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </CarouselItem>
-                ))}
+                {images.map((image, index) => <CarouselItem key={index}>
+                    <img src={image} alt={`${location.name} - View ${index + 1}`} className="w-full h-full object-cover" />
+                  </CarouselItem>)}
               </CarouselContent>
               <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
               <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
@@ -122,34 +106,25 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
 
         {/* Comments Panel - Overlaying Left */}
         <div className="absolute left-0 top-0 bottom-0 w-1/3 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
-          <div className="flex items-center gap-2 text-sm text-scout-text-muted mb-6">
-            <Camera className="w-4 h-4" />
-            {comments.length} reviews
-          </div>
           
-          <ScrollArea 
-            className="h-[calc(100%-60px)]"
-            onScroll={(event) => {
-              const target = event.target as HTMLDivElement;
-              const maxScrollTop = target.scrollHeight - target.clientHeight;
-              handleCommentsScroll(target.scrollTop, maxScrollTop);
-            }}
-          >
+          
+          <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
+          const target = event.target as HTMLDivElement;
+          const maxScrollTop = target.scrollHeight - target.clientHeight;
+          handleCommentsScroll(target.scrollTop, maxScrollTop);
+        }}>
             <div className="space-y-4 pr-4">
-              {comments.map((comment) => (
-                <div key={comment.id} className="comment-card bg-scout-surface/80 backdrop-blur-sm border border-scout-border/30 rounded-lg p-4">
+              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/80 backdrop-blur-sm border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="font-medium text-scout-text text-sm">{comment.author}</div>
                       <div className="text-xs text-scout-text-muted">{comment.role}</div>
                     </div>
                     <div className="flex items-center gap-1">
-                      {comment.rating && (
-                        <>
+                      {comment.rating && <>
                           <Star className="w-3 h-3 fill-scout-secondary text-scout-secondary" />
                           <span className="text-xs text-scout-text-muted">{comment.rating}/5</span>
-                        </>
-                      )}
+                        </>}
                     </div>
                   </div>
                   
@@ -161,14 +136,11 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
                     <Clock className="w-3 h-3" />
                     {comment.timestamp}
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </ScrollArea>
         </div>
       </div>
-    </Card>
-  );
+    </Card>;
 };
-
 export default LocationCard;
