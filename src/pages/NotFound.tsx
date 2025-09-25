@@ -1,5 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Film, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
   const location = useLocation();
@@ -9,13 +11,25 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="text-center space-y-6">
+        <div className="flex justify-center">
+          <Film className="w-16 h-16 text-scout-primary" />
+        </div>
+        <h1 className="text-6xl font-bold text-scout-text">404</h1>
+        <div className="space-y-2">
+          <p className="text-xl text-scout-text">Location Not Found</p>
+          <p className="text-scout-text-muted">This filming location doesn't exist in our database</p>
+        </div>
+        <Button 
+          asChild 
+          className="bg-scout-primary hover:bg-scout-primary/90 text-scout-surface"
+        >
+          <a href="/" className="flex items-center gap-2">
+            <Home className="w-4 h-4" />
+            Return to Locations
+          </a>
+        </Button>
       </div>
     </div>
   );
