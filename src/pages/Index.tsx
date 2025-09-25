@@ -164,16 +164,34 @@ const mockLocations: Location[] = [{
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Filter locations based on search query
+  const filteredLocations = mockLocations.filter(location => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    return (
+      location.location.name.toLowerCase().includes(query) ||
+      location.location.address.toLowerCase().includes(query) ||
+      location.location.type.toLowerCase().includes(query) ||
+      location.comments.some(comment => 
+        comment.content.toLowerCase().includes(query) ||
+        comment.author.toLowerCase().includes(query)
+      )
+    );
+  });
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
       const locationHeight = window.innerHeight;
       const newLocation = Math.floor(window.scrollY / locationHeight);
-      setCurrentLocation(Math.min(newLocation, mockLocations.length - 1));
+      setCurrentLocation(Math.min(newLocation, filteredLocations.length - 1));
     };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [filteredLocations.length]);
   return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-scout-surface/95 backdrop-blur-sm border-b border-scout-border">
@@ -186,7 +204,12 @@ const Index = () => {
           <div className="flex items-center gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-scout-text-muted" />
-              <Input placeholder="Search locations..." className="pl-10 w-64 bg-scout-surface border-scout-border text-scout-text placeholder:text-scout-text-muted" />
+              <Input 
+                placeholder="Search locations..." 
+                className="pl-10 w-64 bg-scout-surface border-scout-border text-scout-text placeholder:text-scout-text-muted"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <Button variant="outline" size="sm" className="border-scout-border text-scout-text hover:bg-scout-surface-alt">
               <Filter className="w-4 h-4 mr-2" />
@@ -203,17 +226,27 @@ const Index = () => {
 
       {/* Locations */}
       <div className="pt-[73px] space-y-8 p-8">
-        {mockLocations.map((location, index) => <div key={location.id} className="min-h-[700px]">
-            <LocationCard id={location.id} images={location.images} location={location.location} comments={location.comments} isActive={currentLocation === index} />
-          </div>)}
+        {filteredLocations.map((location, index) => 
+          <div key={location.id} className="min-h-[700px]">
+            <LocationCard 
+              id={location.id} 
+              images={location.images} 
+              location={location.location} 
+              comments={location.comments} 
+              isActive={currentLocation === index} 
+            />
+          </div>
+        )}
       </div>
 
       {/* Scroll Indicator */}
       <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
-        {currentLocation < mockLocations.length - 1 && <div className="flex flex-col items-center text-scout-text-muted animate-bounce">
+        {currentLocation < filteredLocations.length - 1 && (
+          <div className="flex flex-col items-center text-scout-text-muted animate-bounce">
             <span className="text-xs mb-1">Scroll for next location</span>
             <ChevronDown className="w-4 h-4" />
-          </div>}
+          </div>
+        )}
       </div>
     </div>;
 };
