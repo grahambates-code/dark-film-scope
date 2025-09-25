@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Star, MapPin, Camera, Clock } from 'lucide-react';
 
 interface Comment {
@@ -28,13 +29,13 @@ interface LocationDetails {
 
 interface LocationCardProps {
   id: string;
-  image: string;
+  images: string[];
   location: LocationDetails;
   comments: Comment[];
   isActive: boolean;
 }
 
-const LocationCard = ({ image, location, comments, isActive }: LocationCardProps) => {
+const LocationCard = ({ images, location, comments, isActive }: LocationCardProps) => {
   const [commentsScrolled, setCommentsScrolled] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -48,9 +49,19 @@ const LocationCard = ({ image, location, comments, isActive }: LocationCardProps
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Comments Panel - Left */}
-      <div className="w-1/4 scout-surface border-r border-scout-border p-6">
+    <div className="min-h-screen bg-scout-surface border-b-4 border-scout-border">
+      {/* Location Address Title */}
+      <div className="bg-scout-surface-alt border-b border-scout-border p-6">
+        <h1 className="text-2xl font-bold text-scout-text mb-2">{location.name}</h1>
+        <p className="text-scout-text-muted flex items-center gap-2">
+          <MapPin className="w-4 h-4" />
+          {location.address}
+        </p>
+      </div>
+      
+      <div className="flex">
+        {/* Comments Panel - Left */}
+        <div className="w-1/4 scout-surface border-r border-scout-border p-6">
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-scout-text mb-2">Location Reviews</h3>
           <div className="flex items-center gap-2 text-sm text-scout-text-muted">
@@ -99,31 +110,34 @@ const LocationCard = ({ image, location, comments, isActive }: LocationCardProps
         </ScrollArea>
       </div>
 
-      {/* Main Image - Center */}
-      <div className="flex-1 relative bg-scout-surface-alt">
-        <img 
-          src={image} 
-          alt={location.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute top-6 left-6">
-          <Badge variant="secondary" className="bg-scout-surface/80 backdrop-blur-sm text-scout-text border-scout-border">
-            <MapPin className="w-3 h-3 mr-1" />
-            {location.type}
-          </Badge>
+        {/* Main Image Carousel - Center */}
+        <div className="flex-1 relative bg-scout-surface-alt">
+          <Carousel className="w-full h-full">
+            <CarouselContent>
+              {images.map((image, index) => (
+                <CarouselItem key={index}>
+                  <img 
+                    src={image} 
+                    alt={`${location.name} - View ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt" />
+          </Carousel>
+          <div className="absolute top-6 left-6">
+            <Badge variant="secondary" className="bg-scout-surface/80 backdrop-blur-sm text-scout-text border-scout-border">
+              <MapPin className="w-3 h-3 mr-1" />
+              {location.type}
+            </Badge>
+          </div>
         </div>
-      </div>
 
       {/* Location Details - Right */}
       <div className="w-1/4 scout-surface border-l border-scout-border p-6">
         <div className="space-y-6">
-          <div>
-            <h2 className="text-xl font-bold text-scout-text mb-1">{location.name}</h2>
-            <p className="text-sm text-scout-text-muted flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              {location.address}
-            </p>
-          </div>
 
           <div className="space-y-4">
             <div>
@@ -192,6 +206,7 @@ const LocationCard = ({ image, location, comments, isActive }: LocationCardProps
               <p className="text-sm text-scout-text-muted">{location.contact}</p>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

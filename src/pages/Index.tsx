@@ -5,8 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import location1 from '@/assets/location1.jpg';
+import location1_2 from '@/assets/location1-2.jpg';
+import location1_3 from '@/assets/location1-3.jpg';
 import location2 from '@/assets/location2.jpg';
+import location2_2 from '@/assets/location2-2.jpg';
+import location2_3 from '@/assets/location2-3.jpg';
 import location3 from '@/assets/location3.jpg';
+import location3_2 from '@/assets/location3-2.jpg';
+import location3_3 from '@/assets/location3-3.jpg';
 
 interface Comment {
   id: string;
@@ -33,7 +39,7 @@ interface LocationDetails {
 
 interface Location {
   id: string;
-  image: string;
+  images: string[];
   location: LocationDetails;
   comments: Comment[];
 }
@@ -41,7 +47,7 @@ interface Location {
 const mockLocations: Location[] = [
   {
     id: '1',
-    image: location1,
+    images: [location1, location1_2, location1_3],
     location: {
       name: 'Downtown Financial District',
       address: '425 Market Street, San Francisco, CA',
@@ -84,7 +90,7 @@ const mockLocations: Location[] = [
   },
   {
     id: '2',
-    image: location2,
+    images: [location2, location2_2, location2_3],
     location: {
       name: 'Industrial Warehouse Complex',
       address: '1847 Industrial Blvd, Oakland, CA',
@@ -135,7 +141,7 @@ const mockLocations: Location[] = [
   },
   {
     id: '3',
-    image: location3,
+    images: [location3, location3_2, location3_3],
     location: {
       name: 'Victorian Village District',
       address: '2156 Sacramento Street, San Francisco, CA',
@@ -250,7 +256,7 @@ const Index = () => {
           <div key={location.id} className="h-screen">
             <LocationCard
               id={location.id}
-              image={location.image}
+              images={location.images}
               location={location.location}
               comments={location.comments}
               isActive={currentLocation === index}
