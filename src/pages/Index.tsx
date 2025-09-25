@@ -251,9 +251,9 @@ const Index = () => {
       </div>
 
       {/* Locations */}
-      <div className="pt-[73px]">
+      <div className="pt-[73px] space-y-8 p-8">
         {mockLocations.map((location, index) => (
-          <div key={location.id} className="h-screen">
+          <div key={location.id} className="min-h-[700px]">
             <LocationCard
               id={location.id}
               images={location.images}
