@@ -92,19 +92,43 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
         </div>
       </div>
       
-      <div className="flex h-[600px]">
-        {/* Comments Panel - Left */}
-        <div className="w-1/3 scout-surface border-r border-scout-border p-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-scout-text mb-2">Location Reviews</h3>
-            <div className="flex items-center gap-2 text-sm text-scout-text-muted">
-              <Camera className="w-4 h-4" />
-              {comments.length} reviews
-            </div>
+      <div className="relative h-[600px]">
+        {/* Main Image Carousel - Background */}
+        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center">
+          <div className="w-full h-full max-w-[600px] aspect-square mx-auto">
+            <Carousel className="w-full h-full">
+              <CarouselContent>
+                {images.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <img 
+                      src={image} 
+                      alt={`${location.name} - View ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
+              <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt z-10" />
+            </Carousel>
+          </div>
+          <div className="absolute top-6 left-6 z-10">
+            <Badge variant="secondary" className="bg-scout-surface/80 backdrop-blur-sm text-scout-text border-scout-border">
+              <MapPin className="w-3 h-3 mr-1" />
+              {location.type}
+            </Badge>
+          </div>
+        </div>
+
+        {/* Comments Panel - Overlaying Left */}
+        <div className="absolute left-0 top-0 bottom-0 w-1/3 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
+          <div className="flex items-center gap-2 text-sm text-scout-text-muted mb-6">
+            <Camera className="w-4 h-4" />
+            {comments.length} reviews
           </div>
           
           <ScrollArea 
-            className="h-[calc(100vh-150px)]"
+            className="h-[calc(100%-60px)]"
             onScroll={(event) => {
               const target = event.target as HTMLDivElement;
               const maxScrollTop = target.scrollHeight - target.clientHeight;
@@ -113,7 +137,7 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
           >
             <div className="space-y-4 pr-4">
               {comments.map((comment) => (
-                <div key={comment.id} className="comment-card">
+                <div key={comment.id} className="comment-card bg-scout-surface/80 backdrop-blur-sm border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="font-medium text-scout-text text-sm">{comment.author}</div>
@@ -141,33 +165,6 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
               ))}
             </div>
           </ScrollArea>
-        </div>
-
-        {/* Main Image Carousel - Center */}
-        <div className="flex-1 relative bg-scout-surface-alt flex items-center justify-center">
-          <div className="w-full max-w-[600px] aspect-square">
-            <Carousel className="w-full h-full">
-              <CarouselContent>
-                {images.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <img 
-                      src={image} 
-                      alt={`${location.name} - View ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt" />
-              <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 backdrop-blur-sm border-scout-border hover:bg-scout-surface-alt" />
-            </Carousel>
-          </div>
-          <div className="absolute top-6 left-6">
-            <Badge variant="secondary" className="bg-scout-surface/80 backdrop-blur-sm text-scout-text border-scout-border">
-              <MapPin className="w-3 h-3 mr-1" />
-              {location.type}
-            </Badge>
-          </div>
         </div>
       </div>
     </Card>
