@@ -84,7 +84,7 @@ const LocationCard = ({
       
       <div className="relative h-[600px]">
         {/* Main Image Carousel - Background */}
-        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center pl-[33.333%]">
+        <div className="absolute inset-0 bg-scout-surface-alt flex items-center justify-center pl-[40%]">
           <div className="w-full h-full aspect-square">
             <Carousel className="w-full h-full">
               <CarouselContent>
@@ -107,7 +107,7 @@ const LocationCard = ({
         </div>
 
         {/* Comments Panel - Overlaying Left */}
-        <div className="absolute left-0 top-0 bottom-0 w-1/3 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
+        <div className="absolute left-0 top-0 bottom-0 w-2/5 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
@@ -115,27 +115,27 @@ const LocationCard = ({
           const maxScrollTop = target.scrollHeight - target.clientHeight;
           handleCommentsScroll(target.scrollTop, maxScrollTop);
         }}>
-            <div className="space-y-4 pr-4">
+            <div className="space-y-4 pr-2">
               {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/80 backdrop-blur-sm border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <div className="font-medium text-scout-text text-sm">{comment.author}</div>
-                      <div className="text-xs text-scout-text-muted">{comment.role}</div>
+                      <div className="font-medium text-scout-text text-base">{comment.author}</div>
+                      <div className="text-sm text-scout-text-muted">{comment.role}</div>
                     </div>
                     <div className="flex items-center gap-1">
                       {comment.rating && <>
-                          <Star className="w-3 h-3 fill-scout-secondary text-scout-secondary" />
-                          <span className="text-xs text-scout-text-muted">{comment.rating}/5</span>
+                          <Star className="w-4 h-4 fill-scout-secondary text-scout-secondary" />
+                          <span className="text-sm text-scout-text-muted">{comment.rating}/5</span>
                         </>}
                     </div>
                   </div>
                   
-                  <p className="text-scout-text text-sm leading-relaxed mb-3">
+                  <p className="text-scout-text text-base leading-relaxed mb-3">
                     {comment.content}
                   </p>
                   
-                  <div className="flex items-center gap-1 text-xs text-scout-text-muted">
-                    <Clock className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-sm text-scout-text-muted">
+                    <Clock className="w-4 h-4" />
                     {comment.timestamp}
                   </div>
                 </div>)}
