@@ -99,16 +99,10 @@ const LocationCard = ({
               <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-scout-surface/80 border-scout-border hover:bg-scout-surface-alt z-10" />
             </Carousel>
           </div>
-          <div className="absolute top-6 left-6 z-10">
-            <Badge variant="secondary" className="bg-scout-surface/80 text-scout-text border-scout-border">
-              <MapPin className="w-3 h-3 mr-1" />
-              {location.type}
-            </Badge>
-          </div>
         </div>
 
         {/* Comments Panel - Bleeding Out */}
-        <div className="absolute -left-8 top-4 bottom-4 w-[55%] bg-transparent border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl">
+        <div className="absolute -left-16 top-0 bottom-0 w-[60%] bg-transparent border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
