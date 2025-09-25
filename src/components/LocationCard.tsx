@@ -51,20 +51,50 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
 
   return (
     <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
-      {/* Location Address Title */}
+      {/* Location Header with Key Details */}
       <div className="bg-scout-surface-alt border-b border-scout-border p-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start justify-between gap-4 mb-4">
           <h1 className="text-2xl font-bold text-scout-text">{location.name}</h1>
           <p className="text-scout-text-muted flex items-center gap-2">
             <MapPin className="w-4 h-4" />
             {location.address}
           </p>
         </div>
+        
+        <div className="flex items-center gap-6 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-scout-text-muted">Size:</span>
+            <span className="text-scout-text font-medium">{location.size}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-scout-text-muted">Daily Rate:</span>
+            <span className="text-scout-text font-semibold">{location.dailyRate}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-scout-text-muted">Permits:</span>
+            <div className="flex flex-wrap gap-1">
+              {location.permits.slice(0, 3).map((permit, index) => (
+                <Badge 
+                  key={index} 
+                  variant="outline" 
+                  className="text-xs border-scout-border-light text-scout-text-muted"
+                >
+                  {permit}
+                </Badge>
+              ))}
+              {location.permits.length > 3 && (
+                <Badge variant="outline" className="text-xs border-scout-border-light text-scout-text-muted">
+                  +{location.permits.length - 3} more
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
       
       <div className="flex h-[600px]">
         {/* Comments Panel - Left */}
-        <div className="w-1/4 scout-surface border-r border-scout-border p-6">
+        <div className="w-1/3 scout-surface border-r border-scout-border p-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-scout-text mb-2">Location Reviews</h3>
             <div className="flex items-center gap-2 text-sm text-scout-text-muted">
@@ -137,79 +167,6 @@ const LocationCard = ({ images, location, comments, isActive }: LocationCardProp
               <MapPin className="w-3 h-3 mr-1" />
               {location.type}
             </Badge>
-          </div>
-        </div>
-
-        {/* Location Details - Right */}
-        <div className="w-1/4 scout-surface border-l border-scout-border p-6">
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-semibold text-scout-text mb-2">Property Details</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-scout-text-muted">Size:</span>
-                    <span className="text-scout-text">{location.size}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-scout-text-muted">Daily Rate:</span>
-                    <span className="text-scout-text font-semibold">{location.dailyRate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-scout-text-muted">Availability:</span>
-                    <span className="text-scout-text">{location.availability}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-sm font-semibold text-scout-text mb-2">Filming Infrastructure</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-scout-text-muted">Parking:</span>
-                    <span className="text-scout-text">{location.parking}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-scout-text-muted">Power:</span>
-                    <span className="text-scout-text">{location.power}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-sm font-semibold text-scout-text mb-2">Permits Required</h4>
-                <div className="flex flex-wrap gap-1">
-                  {location.permits.map((permit, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
-                      className="text-xs border-scout-border-light text-scout-text-muted"
-                    >
-                      {permit}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {location.restrictions.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold text-scout-text mb-2">Restrictions</h4>
-                  <ul className="text-xs text-scout-text-muted space-y-1">
-                    {location.restrictions.map((restriction, index) => (
-                      <li key={index} className="flex items-start gap-1">
-                        <span className="text-scout-secondary">•</span>
-                        {restriction}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="pt-4 border-t border-scout-border">
-                <h4 className="text-sm font-semibold text-scout-text mb-1">Location Manager</h4>
-                <p className="text-sm text-scout-text-muted">{location.contact}</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
