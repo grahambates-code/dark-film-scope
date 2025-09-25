@@ -52,7 +52,7 @@ const LocationCard = ({
   return <div className="relative">
     <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
       {/* Location Header with Key Details */}
-      <div className="bg-scout-surface-alt border-b border-scout-border p-6">
+      <div className="bg-scout-surface-alt border-b border-scout-border p-6 py-[10px]">
         <div className="flex items-start justify-between gap-4 mb-4">
           <h1 className="font-bold text-scout-text text-4xl">{location.name}</h1>
           <p className="text-scout-text-muted flex items-center gap-2 text-sm">
