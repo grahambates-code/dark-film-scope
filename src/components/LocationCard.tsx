@@ -48,7 +48,8 @@ const LocationCard = ({
       setCommentsScrolled(false);
     }
   };
-  return <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
+  return <div className="relative">
+    <Card className="bg-scout-surface border-scout-border shadow-lg overflow-hidden">
       {/* Location Header with Key Details */}
       <div className="bg-scout-surface-alt border-b border-scout-border p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
@@ -106,8 +107,8 @@ const LocationCard = ({
           </div>
         </div>
 
-        {/* Comments Panel - Overlaying Left */}
-        <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-scout-surface/95 backdrop-blur-sm border-r border-scout-border/50 p-6 z-20">
+        {/* Comments Panel - Bleeding Out */}
+        <div className="absolute -left-8 top-4 bottom-4 w-[55%] bg-scout-surface/95 backdrop-blur-sm border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
@@ -143,6 +144,7 @@ const LocationCard = ({
           </ScrollArea>
         </div>
       </div>
-    </Card>;
+    </Card>
+  </div>;
 };
 export default LocationCard;
