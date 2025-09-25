@@ -198,7 +198,7 @@ const Index = () => {
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
             <Film className="w-6 h-6 text-scout-primary" />
-            <h1 className="text-lg font-bold text-scout-text">FilmScout Pro</h1>
+            <h1 className="text-lg font-bold text-scout-primary">FilmScout Pro</h1>
           </div>
           
           <div className="flex items-center gap-4">
