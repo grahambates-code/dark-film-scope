@@ -72,7 +72,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error signing out:', error);
+      }
+    } catch (error) {
+      console.error('Unexpected error during sign out:', error);
+    }
   };
 
   const value = {

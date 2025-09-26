@@ -305,7 +305,10 @@ const LocationDetails = () => {
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive hover:bg-destructive/10">
+              <DropdownMenuItem onClick={async () => {
+                await signOut();
+                navigate('/');
+              }} className="text-destructive focus:text-destructive hover:bg-destructive/10">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Logout
               </DropdownMenuItem>
