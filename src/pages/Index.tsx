@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Film, Search, Filter } from 'lucide-react';
+import { ChevronDown, Film, Search, Filter, LogOut } from 'lucide-react';
 import LocationCard from '@/components/LocationCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/components/AuthProvider';
+import AuthForm from '@/components/AuthForm';
 import location1 from '@/assets/location1.jpg';
 import location1_2 from '@/assets/location1-2.jpg';
 import location1_3 from '@/assets/location1-3.jpg';
@@ -162,9 +164,27 @@ const mockLocations: Location[] = [{
   }]
 }];
 const Index = () => {
+  const { user, loading, signOut } = useAuth();
   const [currentLocation, setCurrentLocation] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Show loading spinner while checking auth state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <Film className="w-6 h-6 text-scout-primary animate-pulse" />
+          <span className="text-scout-text">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show auth form if user is not logged in
+  if (!user) {
+    return <AuthForm onAuthSuccess={() => {}} />;
+  }
 
   // Filter locations based on search query
   const filteredLocations = mockLocations.filter(location => {
@@ -199,6 +219,15 @@ const Index = () => {
             <Button variant="outline" size="sm" className="border-scout-border text-scout-text hover:bg-scout-surface-alt">
               <Filter className="w-4 h-4 mr-2" />
               Filters
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={signOut}
+              className="border-scout-border text-scout-text hover:bg-scout-surface-alt"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
             </Button>
           </div>
         </div>
