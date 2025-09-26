@@ -10,6 +10,7 @@ interface TiptapEditorProps {
   onChange: (content: string) => void;
   placeholder?: string;
   className?: string;
+  viewState?: any;
 }
 
 const TiptapEditor = ({ content, onChange, placeholder = "Write something...", className }: TiptapEditorProps) => {

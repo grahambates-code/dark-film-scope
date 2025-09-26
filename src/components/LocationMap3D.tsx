@@ -10,33 +10,19 @@ import { toast } from 'sonner';
 
 interface LocationMap3DProps {
   locationId: string;
-  initialViewState?: any;
+  viewState: any;
+  onViewStateChange: (viewState: any) => void;
   className?: string;
 }
 
 const LocationMap3D = ({
                          locationId,
-                         initialViewState,
+                         viewState,
+                         onViewStateChange,
                          className = ""
                        }: LocationMap3DProps) => {
   const deckRef = useRef(null);
-  const [viewState, setViewState] = useState<MapViewState>(
-    initialViewState || {
-      longitude: -74.0060,
-      latitude: 40.7128,
-      zoom: 15,
-      pitch: 0,
-      bearing: 0
-    }
-  );
   const [saving, setSaving] = useState(false);
-
-  // Update viewState when props change
-  useEffect(() => {
-    if (initialViewState) {
-      setViewState(initialViewState);
-    }
-  }, [initialViewState]);
 
   // ✅ Memoize the layer so it's only created when needed
   const layers = useMemo(() => [
@@ -111,7 +97,7 @@ const LocationMap3D = ({
             layers={layers}
             viewState={viewState}
             controller={true}
-            onViewStateChange={({ viewState: newViewState }: any) => setViewState(newViewState)}
+            onViewStateChange={({ viewState: newViewState }: any) => onViewStateChange(newViewState)}
         />
 
         {/* Save button */}

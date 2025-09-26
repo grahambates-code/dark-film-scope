@@ -65,6 +65,13 @@ const LocationDetails = () => {
   const [production, setProduction] = useState<Production | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [cameraPosition, setCameraPosition] = useState<any>(null);
+  const [viewState, setViewState] = useState<any>({
+    longitude: -74.0060,
+    latitude: 40.7128,
+    zoom: 15,
+    pitch: 0,
+    bearing: 0
+  });
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -143,6 +150,9 @@ const LocationDetails = () => {
         console.error('Error fetching camera position:', cameraError);
       } else {
         setCameraPosition(cameraData?.viewstate);
+        if (cameraData?.viewstate) {
+          setViewState(cameraData.viewstate);
+        }
       }
     } catch (error) {
       console.error('Error fetching location details:', error);
@@ -306,7 +316,13 @@ const LocationDetails = () => {
                     ×
                   </Button>
                 </div>
-                <TiptapEditor content={newComment} onChange={setNewComment} placeholder="Share your thoughts about this location..." className="min-h-[80px]" />
+                <TiptapEditor 
+                  content={newComment} 
+                  onChange={setNewComment} 
+                  placeholder="Share your thoughts about this location..." 
+                  className="min-h-[80px]"
+                  viewState={viewState}
+                />
                 <Button onClick={handleSubmitComment} disabled={!newComment.trim() || submitting} size="sm" className="w-full">
                   <Send className="w-4 h-4 mr-2" />
                   {submitting ? 'Posting...' : 'Post Comment'}
@@ -369,7 +385,8 @@ const LocationDetails = () => {
                     <div className="relative">
                       <LocationMap3D 
                         locationId={locationId!}
-                        initialViewState={cameraPosition}
+                        viewState={viewState}
+                        onViewStateChange={setViewState}
                         className="w-full h-[500px]"
                       />
                       {/* Map indicator */}
