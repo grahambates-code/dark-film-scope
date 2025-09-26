@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -121,6 +121,22 @@ const LocationDetails = () => {
       setSubmitting(false);
     }
   };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      const { error } = await supabase
+        .from('comments')
+        .delete()
+        .eq('id', commentId);
+      
+      if (error) throw error;
+
+      // Remove the comment from the local state
+      setComments(prev => prev.filter(comment => comment.id !== commentId));
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
   const openInMaps = () => {
     if (location?.latitude && location?.longitude) {
       const url = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
@@ -212,8 +228,20 @@ const LocationDetails = () => {
 
           {/* Comments List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {comments.map(comment => <Card key={comment.id} className="bg-background/50">
-                <CardContent className="p-3">
+            {comments.map(comment => <Card key={comment.id} className="bg-background/50 group hover:bg-background/70 transition-colors">
+                <CardContent className="p-3 relative">
+                  {/* Delete button - only show on hover and if user owns the comment */}
+                  {user?.email === comment.author && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteComment(comment.id)}
+                      className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  )}
+                  
                   <div className="flex items-start gap-2 mb-2">
                     <User className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
