@@ -150,7 +150,12 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
           size="sm"
           onClick={() => {
             if (viewState && hasSelection) {
-              editor.chain().focus().setViewState(viewState).run();
+              const { from, to } = editor.state.selection;
+              editor.chain()
+                .focus()
+                .setViewState(viewState)
+                .setTextSelection(to) // Move cursor to end of selection
+                .run();
             }
           }}
           disabled={!viewState || !hasSelection}
