@@ -122,7 +122,7 @@ const LocationCard = ({
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="font-medium text-scout-primary text-xl">{comment.author}</div>
-                      <div className="text-sm text-scout-text-muted">{comment.role}</div>
+                      
                     </div>
                     
                   </div>
