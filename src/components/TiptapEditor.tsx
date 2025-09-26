@@ -155,7 +155,8 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
                 .focus()
                 .setViewState(viewState)
                 .setTextSelection(to) // Move cursor to end of selection
-                .insertContent(' ') // Insert a space to exit the mark
+                .unsetViewState() // Unset the mark for future content
+                .insertContent(' ') // Insert a normal space outside the mark
                 .run();
             }
           }}
