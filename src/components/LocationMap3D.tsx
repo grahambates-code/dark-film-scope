@@ -109,7 +109,7 @@ const LocationMap3D = ({
           onClick={saveViewState}
           disabled={saving}
           size="sm"
-          className="absolute top-4 right-4 h-8 w-8 p-0"
+          className="absolute bottom-4 right-4 h-8 w-8 p-0"
         >
           <Save className="w-4 h-4" />
         </Button>
