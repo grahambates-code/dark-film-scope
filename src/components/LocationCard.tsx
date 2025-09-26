@@ -109,7 +109,7 @@ const LocationCard = ({
         </div>
 
         {/* Comments Panel - Bleeding Out */}
-        <div className="absolute -left-8 top-0 bottom-0 w-[60%] bg-transparent border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl">
+        <div className="absolute -left-8 top-0 bottom-0 w-[60%] bg-transparent border border-scout-border rounded-lg p-6 z-30 shadow-2xl">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
