@@ -98,7 +98,7 @@ const LocationMap3D = ({
             viewState={{
               ...viewState,
               transitionDuration: 1000,
-              transitionInterpolator: null
+             // transitionInterpolator: null
             }}
             controller={true}
             onViewStateChange={({ viewState: newViewState }: any) => onViewStateChange(newViewState)}
