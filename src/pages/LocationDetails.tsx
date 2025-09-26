@@ -294,12 +294,12 @@ const LocationDetails = () => {
           {/* Account Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2 h-auto px-2 py-1">
                 <User className="w-4 h-4" />
                 <span className="text-sm">{user?.email}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-background border border-border shadow-lg z-[100]">
+            <DropdownMenuContent align="end" sideOffset={5} className="w-56 bg-background border border-border shadow-lg z-[100]">
               <DropdownMenuItem disabled className="cursor-default opacity-50">
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
