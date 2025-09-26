@@ -4,10 +4,10 @@ import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, 
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
+import TiptapEditor from '@/components/TiptapEditor';
 
 interface Location {
   id: string;
@@ -103,8 +103,16 @@ const LocationDetails = () => {
     }
   };
 
+  // Helper function to strip HTML tags and get plain text
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   const handleSubmitComment = async () => {
-    if (!newComment.trim() || !user || !locationId) return;
+    const plainTextContent = stripHtml(newComment).trim();
+    if (!plainTextContent || !user || !locationId) return;
 
     setSubmitting(true);
     try {
@@ -113,7 +121,7 @@ const LocationDetails = () => {
         .from('comments')
         .insert({
           location_id: locationId,
-          content: newComment.trim(),
+          content: plainTextContent,
           author: user.email || 'Anonymous User'
         })
         .select()
@@ -240,15 +248,15 @@ const LocationDetails = () => {
             
             {/* New Comment Form */}
             <div className="space-y-3">
-              <Textarea
+              <TiptapEditor
+                content={newComment}
+                onChange={setNewComment}
                 placeholder="Share your thoughts about this location..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="min-h-[80px] resize-none"
+                className="min-h-[80px]"
               />
               <Button 
                 onClick={handleSubmitComment}
-                disabled={!newComment.trim() || submitting}
+                disabled={!stripHtml(newComment).trim() || submitting}
                 size="sm"
                 className="w-full"
               >
