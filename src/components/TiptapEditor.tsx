@@ -13,9 +13,17 @@ interface TiptapEditorProps {
   placeholder?: string;
   className?: string;
   viewState?: any;
+  onViewStateClick?: (viewState: any) => void;
 }
 
-const TiptapEditor = ({ content, onChange, placeholder = "Write something...", className = "", viewState }: TiptapEditorProps) => {
+const TiptapEditor = ({ 
+  content, 
+  onChange, 
+  placeholder = "Write something...", 
+  className = "", 
+  viewState,
+  onViewStateClick 
+}: TiptapEditorProps) => {
   const [hasSelection, setHasSelection] = useState(false);
 
   const editor = useEditor({
@@ -41,9 +49,13 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
         const target = event.target as HTMLElement;
         if (target.hasAttribute('data-viewstate')) {
           const viewStateStr = target.getAttribute('data-viewstate');
-          if (viewStateStr) {
-            const viewStateData = JSON.parse(viewStateStr);
-            alert(`Camera Position:\nLongitude: ${viewStateData.longitude}\nLatitude: ${viewStateData.latitude}\nZoom: ${viewStateData.zoom}\nPitch: ${viewStateData.pitch}\nBearing: ${viewStateData.bearing}`);
+          if (viewStateStr && onViewStateClick) {
+            try {
+              const viewStateData = JSON.parse(viewStateStr);
+              onViewStateClick(viewStateData);
+            } catch (error) {
+              console.error('Error parsing view state:', error);
+            }
           }
         }
         return false;

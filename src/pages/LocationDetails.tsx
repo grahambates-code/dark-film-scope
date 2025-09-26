@@ -323,6 +323,7 @@ const LocationDetails = () => {
                   placeholder="Share your thoughts about this location..." 
                   className="min-h-[80px]"
                   viewState={viewState}
+                  onViewStateClick={(viewState) => setViewState(viewState)}
                 />
                 <Button onClick={handleSubmitComment} disabled={!newComment.trim() || submitting} size="sm" className="w-full">
                   <Send className="w-4 h-4 mr-2" />
@@ -362,7 +363,7 @@ const LocationDetails = () => {
                       <CommentRenderer 
                         content={comment.content}
                         onViewStateClick={(viewState) => {
-                          alert(`Camera Position: ${JSON.stringify(viewState, null, 2)}`);
+                          setViewState(viewState);
                         }}
                       />
                     </div>
