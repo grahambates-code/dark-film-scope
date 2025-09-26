@@ -357,7 +357,12 @@ const LocationDetails = () => {
           {/* Location Carousel - Map + Images */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="max-w-4xl w-full">
-              <Carousel className="w-full">
+              <Carousel 
+                className="w-full"
+                opts={{
+                  watchDrag: false
+                }}
+              >
                 <CarouselContent>
                   {/* First item: 3D Map */}
                   <CarouselItem>
