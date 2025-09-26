@@ -265,19 +265,19 @@ const LocationDetails = () => {
             {commentsExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </Button>
           
+          {/* Add Comment Button - Top Right */}
+          {!commentFormVisible && (
+            <Button 
+              onClick={() => setCommentFormVisible(true)}
+              size="sm"
+              className="absolute top-4 right-4 rounded-full h-10 w-10 p-0 z-20"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          )}
+          
           <div className="p-4 border-b border-scout-border">
-            {!commentFormVisible ? (
-              // Circular Add Comment Button
-              <div className="flex justify-center">
-                <Button 
-                  onClick={() => setCommentFormVisible(true)}
-                  size="sm"
-                  className="rounded-full h-10 w-10 p-0"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
-            ) : (
+            {commentFormVisible && (
               // Expanded Comment Form
               <div className="space-y-3">
                 <div className="flex items-center justify-between mb-3">
