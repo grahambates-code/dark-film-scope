@@ -16,28 +16,28 @@ export type Database = {
     Tables: {
       comments: {
         Row: {
-          author: string
           content: string
           created_at: string
           id: string
           location_id: string
           updated_at: string
+          user_id: string
         }
         Insert: {
-          author: string
           content: string
           created_at?: string
           id?: string
           location_id: string
           updated_at?: string
+          user_id: string
         }
         Update: {
-          author?: string
           content?: string
           created_at?: string
           id?: string
           location_id?: string
           updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -46,6 +46,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -152,6 +159,33 @@ export type Database = {
           type?: string
           updated_at?: string
           year?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

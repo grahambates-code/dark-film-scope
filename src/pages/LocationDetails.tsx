@@ -48,8 +48,11 @@ interface Production {
 interface Comment {
   id: string;
   content: string;
-  author: string;
+  user_id: string;
   created_at: string;
+  profiles?: {
+    display_name: string | null;
+  };
 }
 const LocationDetails = () => {
   const {
@@ -132,11 +135,14 @@ const LocationDetails = () => {
         setProduction(productionData);
       }
 
-      // Fetch real comments from database
+      // Fetch comments for this location with profile data
       const {
         data: commentsData,
         error: commentsError
-      } = await supabase.from('comments').select('*').eq('location_id', locId).order('created_at', {
+      } = await supabase.from('comments').select(`
+        *,
+        profiles!comments_user_id_fkey(display_name)
+      `).eq('location_id', locId).order('created_at', {
         ascending: false
       });
       if (commentsError) throw commentsError;
@@ -172,8 +178,11 @@ const LocationDetails = () => {
       } = await supabase.from('comments').insert({
         location_id: locationId,
         content: newComment,
-        author: user.email || 'Anonymous User'
-      }).select().single();
+        user_id: user.id
+      }).select(`
+        *,
+        profiles!comments_user_id_fkey(display_name)
+      `).single();
       if (error) throw error;
 
       // Add the new comment to the top of the list
@@ -188,10 +197,11 @@ const LocationDetails = () => {
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const { error } = await supabase
-        .from('comments')
-        .delete()
-        .eq('id', commentId);
+    const { error } = await supabase
+      .from('comments')
+      .delete()
+      .eq('id', commentId)
+      .eq('user_id', user.id);
       
       if (error) throw error;
 
@@ -338,7 +348,7 @@ const LocationDetails = () => {
             {comments.map(comment => <Card key={comment.id} className="bg-background/50 group hover:bg-background/70 transition-colors">
                 <CardContent className="p-3 relative">
                   {/* Delete button - only show on hover and if user owns the comment */}
-                  {user?.email === comment.author && (
+                  {user?.id === comment.user_id && (
                     <Button
                       variant="ghost"
                       size="sm"
@@ -354,7 +364,7 @@ const LocationDetails = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm font-medium text-card-foreground truncate">
-                          {comment.author}
+                          {comment.profiles?.display_name || 'Anonymous User'}
                         </span>
                         <Badge variant="secondary" className="text-xs">
                           {formatRelativeTime(comment.created_at)}
