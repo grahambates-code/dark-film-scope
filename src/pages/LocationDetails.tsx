@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, ChevronRight, Trash2, Settings } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +11,13 @@ import AuthForm from '@/components/AuthForm';
 import TiptapEditor from '@/components/TiptapEditor';
 import CommentRenderer from '@/components/CommentRenderer';
 import LocationMap3D from '@/components/LocationMap3D';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
   Carousel,
   CarouselContent,
@@ -63,7 +70,8 @@ const LocationDetails = () => {
   const navigate = useNavigate();
   const {
     user,
-    loading: authLoading
+    loading: authLoading,
+    signOut
   } = useAuth();
   const [location, setLocation] = useState<Location | null>(null);
   const [production, setProduction] = useState<Production | null>(null);
@@ -282,6 +290,27 @@ const LocationDetails = () => {
                 </Badge>
               </div>}
           </div>
+          
+          {/* Account Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 h-auto py-2">
+                <User className="w-5 h-5" />
+                <span className="text-xs text-muted-foreground">{user?.email}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem disabled className="cursor-default">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
