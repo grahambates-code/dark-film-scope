@@ -11,6 +11,7 @@ import AuthForm from '@/components/AuthForm';
 import TiptapEditor from '@/components/TiptapEditor';
 import CommentRenderer from '@/components/CommentRenderer';
 import LocationMap3D from '@/components/LocationMap3D';
+import { AppHeader } from '@/components/AppHeader';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,8 +71,7 @@ const LocationDetails = () => {
   const navigate = useNavigate();
   const {
     user,
-    loading: authLoading,
-    signOut
+    loading: authLoading
   } = useAuth();
   const [location, setLocation] = useState<Location | null>(null);
   const [production, setProduction] = useState<Production | null>(null);
@@ -273,49 +273,11 @@ const LocationDetails = () => {
   }
   return <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-scout-surface/95 backdrop-blur-sm border-b border-scout-border p-4">
-        <div className="flex items-center gap-4">
-          <Button onClick={() => navigate('/')} variant="ghost" size="sm" className="text-scout-text hover:bg-scout-surface-alt">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-scout-primary">{location.name}</h1>
-            {production && <div className="flex items-center gap-2 mt-1">
-                <Badge variant="secondary" className="text-xs">
-                  {production.title}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  {production.type.replace('tv_show', 'TV Show').replace('_', ' ')}
-                </Badge>
-              </div>}
-          </div>
-          
-          {/* Account Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex items-center gap-2 h-auto px-2 py-1">
-                <User className="w-4 h-4" />
-                <span className="text-sm">{user?.email}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" sideOffset={5} className="w-56 bg-background border border-border shadow-lg z-[100]">
-              <DropdownMenuItem disabled className="cursor-default opacity-50">
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={async () => {
-                await signOut();
-                navigate('/');
-              }} className="text-destructive focus:text-destructive hover:bg-destructive/10">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
+      <AppHeader 
+        variant="location" 
+        locationName={location.name} 
+        production={production} 
+      />
 
       <div className="flex h-[calc(100vh-73px)]">
         {/* Comments Sidebar - Left */}
