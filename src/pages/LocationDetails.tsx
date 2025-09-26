@@ -342,22 +342,27 @@ const LocationDetails = () => {
 
         {/* Main Content - Center */}
         <div className="flex-1 flex flex-col">
-          {/* 3D Map View */}
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="max-w-4xl w-full">
-              <LocationMap3D 
-                latitude={location.latitude || undefined}
-                longitude={location.longitude || undefined}
-                className="w-full h-[500px] rounded-lg shadow-lg"
-              />
-            </div>
-          </div>
-
-          {/* Location Image Carousel */}
+          {/* Location Carousel - Map + Images */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="max-w-4xl w-full">
               <Carousel className="w-full">
                 <CarouselContent>
+                  {/* First item: 3D Map */}
+                  <CarouselItem>
+                    <div className="relative">
+                      <LocationMap3D 
+                        latitude={location.latitude || undefined}
+                        longitude={location.longitude || undefined}
+                        className="w-full h-[500px]"
+                      />
+                      {/* Map indicator */}
+                      <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                        Map / {getLocationImages(location.name).length + 1}
+                      </div>
+                    </div>
+                  </CarouselItem>
+                  
+                  {/* Remaining items: Images */}
                   {getLocationImages(location.name).map((imageSrc, index) => (
                     <CarouselItem key={index}>
                       <div className="relative">
@@ -372,7 +377,7 @@ const LocationDetails = () => {
                         />
                         {/* Image counter */}
                         <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                          {index + 1} / {getLocationImages(location.name).length}
+                          {index + 2} / {getLocationImages(location.name).length + 1}
                         </div>
                       </div>
                     </CarouselItem>
