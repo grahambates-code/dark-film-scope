@@ -109,7 +109,7 @@ const LocationCard = ({
         </div>
 
         {/* Comments Panel - Bleeding Out */}
-        <div className="absolute -left-8 top-0 bottom-0 w-[60%] bg-transparent border border-scout-border rounded-lg p-6 z-30 shadow-2xl">
+        <div className="absolute -left-8 top-0 bottom-0 w-[60%] bg-transparent border border-scout-border/50 rounded-lg p-6 z-30 shadow-2xl py-0 px-0 mx-[40px]">
           
           
           <ScrollArea className="h-[calc(100%-60px)]" onScroll={event => {
@@ -118,7 +118,7 @@ const LocationCard = ({
             handleCommentsScroll(target.scrollTop, maxScrollTop);
           }}>
             <div className="space-y-4 pr-2">
-              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border-2 border-scout-border rounded-lg p-4 shadow-sm">
+              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border border-scout-border/30 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="font-medium text-scout-primary text-xl">{comment.author}</div>
