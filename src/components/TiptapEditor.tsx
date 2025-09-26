@@ -1,8 +1,9 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Bold, Italic, List, ListOrdered, Undo, Redo } from 'lucide-react';
+import { Bold, Italic, List, ListOrdered, Undo, Redo, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ViewState } from './tiptap/ViewStateExtension';
 import { cn } from '@/lib/utils';
 
 interface TiptapEditorProps {
@@ -13,25 +14,33 @@ interface TiptapEditorProps {
   viewState?: any;
 }
 
-const TiptapEditor = ({ content, onChange, placeholder = "Write something...", className }: TiptapEditorProps) => {
+const TiptapEditor = ({ content, onChange, placeholder = "Write something...", className = "", viewState }: TiptapEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
         placeholder,
       }),
+      ViewState,
     ],
     content,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onChange(html);
+      onChange(editor.getHTML());
     },
     editorProps: {
       attributes: {
-        class: cn(
-          'prose prose-sm max-w-none focus:outline-none min-h-[60px] px-3 py-2',
-          className
-        ),
+        class: 'prose prose-sm sm:prose-base max-w-none focus:outline-none min-h-[60px] p-3',
+      },
+      handleClick: (view, pos, event) => {
+        const target = event.target as HTMLElement;
+        if (target.hasAttribute('data-viewstate')) {
+          const viewStateStr = target.getAttribute('data-viewstate');
+          if (viewStateStr) {
+            const viewStateData = JSON.parse(viewStateStr);
+            alert(`Camera Position:\nLongitude: ${viewStateData.longitude}\nLatitude: ${viewStateData.latitude}\nZoom: ${viewStateData.zoom}\nPitch: ${viewStateData.pitch}\nBearing: ${viewStateData.bearing}`);
+          }
+        }
+        return false;
       },
     },
   });
@@ -116,6 +125,29 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
           className="h-8 w-8 p-0"
         >
           <Redo className="h-4 w-4" />
+        </Button>
+        
+        {/* Separator */}
+        <div className="w-px h-4 bg-border mx-1" />
+        
+        {/* ViewState capture button */}
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            if (viewState && !editor.state.selection.empty) {
+              editor.chain().focus().setViewState(viewState).run();
+            }
+          }}
+          disabled={!viewState || editor.state.selection.empty}
+          className={cn(
+            "h-8 w-8 p-0",
+            editor.isActive('viewState') ? 'bg-muted' : ''
+          )}
+          title="Capture camera position for selected text"
+        >
+          <MapPin className="h-4 w-4" />
         </Button>
       </div>
       
