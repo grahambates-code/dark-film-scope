@@ -64,7 +64,7 @@ const Index = () => {
 
         {/* Main Content */}
         <SidebarInset>
-          <main className="flex-1 pt-[73px]">
+          <main className="flex-1 pt-[73px] pl-8">
             <LocationsList productionId={selectedProductionId} />
           </main>
         </SidebarInset>
