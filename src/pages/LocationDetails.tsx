@@ -187,14 +187,18 @@ const LocationDetails = () => {
 
       <div className="flex h-[calc(100vh-73px)]">
         {/* Comments Sidebar - Left */}
-        <div className={`${commentsExpanded ? 'w-1/2' : 'w-80'} bg-card border-r border-scout-border flex flex-col transition-all duration-300`}>
+        <div className={`${commentsExpanded ? 'w-1/2' : 'w-80'} bg-card border-r border-scout-border flex flex-col transition-all duration-300 relative`}>
+          {/* Toggle Button - Absolutely positioned on right margin */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setCommentsExpanded(!commentsExpanded)} 
+            className="absolute -right-4 top-4 h-8 w-8 p-0 bg-card border border-scout-border shadow-sm z-10 hover:bg-scout-surface-alt"
+          >
+            {commentsExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          </Button>
+          
           <div className="p-4 border-b border-scout-border">
-            <div className="flex items-center justify-between mb-4">
-              
-              <Button variant="ghost" size="sm" onClick={() => setCommentsExpanded(!commentsExpanded)} className="h-8 w-8 p-0">
-                {commentsExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-              </Button>
-            </div>
             
             {/* New Comment Form */}
             <div className="space-y-3">
