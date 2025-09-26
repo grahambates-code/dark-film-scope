@@ -49,6 +49,7 @@ const LocationDetails = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const [commentFormVisible, setCommentFormVisible] = useState(false);
 
   // Mock image for now - you can replace with actual location images
   const getLocationImage = (locationName: string) => {
@@ -226,15 +227,41 @@ const LocationDetails = () => {
           </Button>
           
           <div className="p-4 border-b border-scout-border">
-            
-            {/* New Comment Form */}
-            <div className="space-y-3">
-              <TiptapEditor content={newComment} onChange={setNewComment} placeholder="Share your thoughts about this location..." className="min-h-[80px]" />
-              <Button onClick={handleSubmitComment} disabled={!newComment.trim() || submitting} size="sm" className="w-full">
-                <Send className="w-4 h-4 mr-2" />
-                {submitting ? 'Posting...' : 'Post Comment'}
-              </Button>
-            </div>
+            {!commentFormVisible ? (
+              // Circular Add Comment Button
+              <div className="flex justify-center">
+                <Button 
+                  onClick={() => setCommentFormVisible(true)}
+                  size="sm"
+                  className="rounded-full h-10 w-10 p-0"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              // Expanded Comment Form
+              <div className="space-y-3">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-card-foreground">Add Comment</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => {
+                      setCommentFormVisible(false);
+                      setNewComment('');
+                    }}
+                    className="h-6 w-6 p-0"
+                  >
+                    ×
+                  </Button>
+                </div>
+                <TiptapEditor content={newComment} onChange={setNewComment} placeholder="Share your thoughts about this location..." className="min-h-[80px]" />
+                <Button onClick={handleSubmitComment} disabled={!newComment.trim() || submitting} size="sm" className="w-full">
+                  <Send className="w-4 h-4 mr-2" />
+                  {submitting ? 'Posting...' : 'Post Comment'}
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Comments List */}
