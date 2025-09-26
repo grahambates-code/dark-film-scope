@@ -294,18 +294,18 @@ const LocationDetails = () => {
           {/* Account Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 h-auto py-2">
-                <User className="w-5 h-5" />
-                <span className="text-xs text-muted-foreground">{user?.email}</span>
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                <span className="text-sm">{user?.email}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem disabled className="cursor-default">
+            <DropdownMenuContent align="end" className="w-56 bg-background border border-border shadow-lg z-[100]">
+              <DropdownMenuItem disabled className="cursor-default opacity-50">
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
+              <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive hover:bg-destructive/10">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Logout
               </DropdownMenuItem>
