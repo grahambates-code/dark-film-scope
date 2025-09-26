@@ -3,8 +3,12 @@ import DeckGL from '@deck.gl/react';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
 import type { MapViewState } from '@deck.gl/core';
+import { Save } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 
 interface LocationMap3DProps {
+  locationId: string;
   latitude?: number;
   longitude?: number;
   initialViewState?: any;
@@ -12,6 +16,7 @@ interface LocationMap3DProps {
 }
 
 const LocationMap3D = ({
+                         locationId,
                          latitude = 40.7128,
                          longitude = -74.0060,
                          initialViewState,
@@ -25,6 +30,7 @@ const LocationMap3D = ({
     pitch: 0,
     bearing: 0
   });
+  const [saving, setSaving] = useState(false);
 
   // Update viewState when props change
   useEffect(() => {
@@ -63,6 +69,31 @@ const LocationMap3D = ({
     })
   ], []); // Empty dependency array since the layer config is static
 
+  const saveViewState = async () => {
+    setSaving(true);
+    try {
+      // Create a clean object with only serializable properties
+      const cleanViewState = {
+        longitude: viewState.longitude,
+        latitude: viewState.latitude,
+        zoom: viewState.zoom,
+        pitch: viewState.pitch,
+        bearing: viewState.bearing
+      };
+      
+      const { error } = await supabase
+        .from('location_camera_position')
+        .update({ viewstate: cleanViewState })
+        .eq('location_id', locationId);
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving viewstate:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
       <div className={`bg-white relative ${className}`} style={{ height: '500px', width: '100%' }}>
         <DeckGL
@@ -72,6 +103,16 @@ const LocationMap3D = ({
             controller={true}
             onViewStateChange={({ viewState: newViewState }: any) => setViewState(newViewState)}
         />
+
+        {/* Save button */}
+        <Button
+          onClick={saveViewState}
+          disabled={saving}
+          size="sm"
+          className="absolute top-4 right-4 h-8 w-8 p-0"
+        >
+          <Save className="w-4 h-4" />
+        </Button>
 
         {/* Location info overlay */}
         <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded text-sm">

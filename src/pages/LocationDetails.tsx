@@ -363,6 +363,7 @@ const LocationDetails = () => {
                   <CarouselItem>
                     <div className="relative">
                       <LocationMap3D 
+                        locationId={locationId!}
                         latitude={location.latitude || undefined}
                         longitude={location.longitude || undefined}
                         initialViewState={cameraPosition}
