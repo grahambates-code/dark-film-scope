@@ -9,41 +9,33 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface LocationMap3DProps {
   locationId: string;
-  latitude?: number;
-  longitude?: number;
   initialViewState?: any;
   className?: string;
 }
 
 const LocationMap3D = ({
                          locationId,
-                         latitude = 40.7128,
-                         longitude = -74.0060,
                          initialViewState,
                          className = ""
                        }: LocationMap3DProps) => {
   const deckRef = useRef(null);
-  const [viewState, setViewState] = useState<MapViewState>({
-    longitude,
-    latitude,
-    zoom: 15,
-    pitch: 0,
-    bearing: 0
-  });
+  const [viewState, setViewState] = useState<MapViewState>(
+    initialViewState || {
+      longitude: -74.0060,
+      latitude: 40.7128,
+      zoom: 15,
+      pitch: 0,
+      bearing: 0
+    }
+  );
   const [saving, setSaving] = useState(false);
 
   // Update viewState when props change
   useEffect(() => {
     if (initialViewState) {
       setViewState(initialViewState);
-    } else {
-      setViewState(prev => ({
-        ...prev,
-        longitude,
-        latitude
-      }));
     }
-  }, [latitude, longitude, initialViewState]);
+  }, [initialViewState]);
 
   // ✅ Memoize the layer so it's only created when needed
   const layers = useMemo(() => [
@@ -116,7 +108,7 @@ const LocationMap3D = ({
 
         {/* Location info overlay */}
         <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded text-sm">
-          Lat: {latitude?.toFixed(4)}, Lng: {longitude?.toFixed(4)}
+          Lat: {viewState.latitude?.toFixed(4)}, Lng: {viewState.longitude?.toFixed(4)}
         </div>
       </div>
   );
