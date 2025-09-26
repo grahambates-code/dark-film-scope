@@ -5,6 +5,7 @@ import { Bold, Italic, List, ListOrdered, Undo, Redo, MapPin } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { ViewState } from './tiptap/ViewStateExtension';
 import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 
 interface TiptapEditorProps {
   content: string;
@@ -15,6 +16,8 @@ interface TiptapEditorProps {
 }
 
 const TiptapEditor = ({ content, onChange, placeholder = "Write something...", className = "", viewState }: TiptapEditorProps) => {
+  const [hasSelection, setHasSelection] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -26,6 +29,9 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
+    },
+    onSelectionUpdate: ({ editor }) => {
+      setHasSelection(!editor.state.selection.empty);
     },
     editorProps: {
       attributes: {
@@ -44,6 +50,13 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
       },
     },
   });
+
+  // Update selection state when editor is available
+  useEffect(() => {
+    if (editor) {
+      setHasSelection(!editor.state.selection.empty);
+    }
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -136,11 +149,11 @@ const TiptapEditor = ({ content, onChange, placeholder = "Write something...", c
           variant="ghost"
           size="sm"
           onClick={() => {
-            if (viewState && !editor.state.selection.empty) {
+            if (viewState && hasSelection) {
               editor.chain().focus().setViewState(viewState).run();
             }
           }}
-          disabled={!viewState || editor.state.selection.empty}
+          disabled={!viewState || !hasSelection}
           className={cn(
             "h-8 w-8 p-0",
             editor.isActive('viewState') ? 'bg-muted' : ''
