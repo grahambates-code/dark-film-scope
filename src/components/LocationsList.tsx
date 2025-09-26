@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MapPin, Navigation, Phone, DollarSign, Clock, Info, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,6 +32,7 @@ export function LocationsList({ productionId }: LocationsListProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [production, setProduction] = useState<Production | null>(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (productionId) {
@@ -141,7 +143,11 @@ export function LocationsList({ productionId }: LocationsListProps) {
 
           <div className="grid gap-4">
             {locations.map((location) => (
-              <Card key={location.id} className="bg-card hover:bg-accent/50 transition-colors">
+              <Card 
+                key={location.id} 
+                className="bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                onClick={() => navigate(`/location/${location.id}`)}
+              >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <CardTitle className="text-lg font-semibold text-card-foreground">
@@ -149,7 +155,10 @@ export function LocationsList({ productionId }: LocationsListProps) {
                     </CardTitle>
                     {location.latitude && location.longitude && (
                       <button
-                        onClick={() => openInMaps(location.latitude, location.longitude, location.name)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openInMaps(location.latitude, location.longitude, location.name);
+                        }}
                         className="flex items-center gap-1 px-3 py-1 bg-scout-primary/10 hover:bg-scout-primary/20 text-scout-primary rounded-md text-sm transition-colors"
                       >
                         <Navigation className="h-3 w-3" />
