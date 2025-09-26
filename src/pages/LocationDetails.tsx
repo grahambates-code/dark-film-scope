@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import TiptapEditor from '@/components/TiptapEditor';
+import CommentRenderer from '@/components/CommentRenderer';
 import LocationMap3D from '@/components/LocationMap3D';
 import {
   Carousel,
@@ -358,9 +359,12 @@ const LocationDetails = () => {
                           {formatRelativeTime(comment.created_at)}
                         </Badge>
                       </div>
-                      <div className="text-sm text-muted-foreground prose prose-sm max-w-none" dangerouslySetInnerHTML={{
-                    __html: comment.content
-                  }} />
+                      <CommentRenderer 
+                        content={comment.content}
+                        onViewStateClick={(viewState) => {
+                          alert(`Camera Position: ${JSON.stringify(viewState, null, 2)}`);
+                        }}
+                      />
                     </div>
                   </div>
                 </CardContent>
