@@ -9,6 +9,24 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import TiptapEditor from '@/components/TiptapEditor';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+// Import location images
+import location1 from '@/assets/location1.jpg';
+import location1_2 from '@/assets/location1-2.jpg';
+import location1_3 from '@/assets/location1-3.jpg';
+import location2 from '@/assets/location2.jpg';
+import location2_2 from '@/assets/location2-2.jpg';
+import location2_3 from '@/assets/location2-3.jpg';
+import location3 from '@/assets/location3.jpg';
+import location3_2 from '@/assets/location3-2.jpg';
+import location3_3 from '@/assets/location3-3.jpg';
 interface Location {
   id: string;
   production_id: string;
@@ -51,11 +69,31 @@ const LocationDetails = () => {
   const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [commentFormVisible, setCommentFormVisible] = useState(false);
 
-  // Mock image for now - you can replace with actual location images
-  const getLocationImage = (locationName: string) => {
-    // Using picsum for placeholder images based on location name
-    const seed = locationName.toLowerCase().replace(/\s+/g, '-');
-    return `https://picsum.photos/seed/${seed}/800/600`;
+  // Get location images based on location name
+  const getLocationImages = (locationName: string): string[] => {
+    // Map location names to their image arrays
+    const imageMap: { [key: string]: string[] } = {
+      'location1': [location1, location1_2, location1_3],
+      'location2': [location2, location2_2, location2_3], 
+      'location3': [location3, location3_2, location3_3]
+    };
+    
+    // Try to match by location name (case insensitive)
+    const normalizedName = locationName.toLowerCase().replace(/\s+/g, '');
+    
+    // Check for partial matches
+    for (const [key, images] of Object.entries(imageMap)) {
+      if (normalizedName.includes(key) || key.includes(normalizedName)) {
+        return images;
+      }
+    }
+    
+    // Fallback to location1 images or generate placeholder images
+    return imageMap.location1 || [
+      `https://picsum.photos/seed/${locationName}-1/800/600`,
+      `https://picsum.photos/seed/${locationName}-2/800/600`, 
+      `https://picsum.photos/seed/${locationName}-3/800/600`
+    ];
   };
   useEffect(() => {
     if (locationId) {
@@ -303,13 +341,34 @@ const LocationDetails = () => {
 
         {/* Main Content - Center */}
         <div className="flex-1 flex flex-col">
-          {/* Location Image */}
+          {/* Location Image Carousel */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="max-w-4xl w-full">
-              <img src={getLocationImage(location.name)} alt={location.name} className="w-full h-[500px] object-cover rounded-lg shadow-lg" onError={e => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://picsum.photos/800/600?grayscale';
-            }} />
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {getLocationImages(location.name).map((imageSrc, index) => (
+                    <CarouselItem key={index}>
+                      <div className="relative">
+                        <img 
+                          src={imageSrc} 
+                          alt={`${location.name} - Image ${index + 1}`}
+                          className="w-full h-[500px] object-cover rounded-lg shadow-lg" 
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = 'https://picsum.photos/800/600?grayscale';
+                          }} 
+                        />
+                        {/* Image counter */}
+                        <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                          {index + 1} / {getLocationImages(location.name).length}
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
             </div>
           </div>
 
