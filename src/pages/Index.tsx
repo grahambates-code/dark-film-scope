@@ -5,7 +5,7 @@ import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import { ProductionSidebar } from '@/components/ProductionSidebar';
 import { LocationsList } from '@/components/LocationsList';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 const Index = () => {
   const { user, loading, signOut } = useAuth();
   const [selectedProductionId, setSelectedProductionId] = useState<string | null>(null);
@@ -63,9 +63,11 @@ const Index = () => {
         />
 
         {/* Main Content */}
-        <main className="flex-1 pt-[73px]">
-          <LocationsList productionId={selectedProductionId} />
-        </main>
+        <SidebarInset>
+          <main className="flex-1 pt-[73px]">
+            <LocationsList productionId={selectedProductionId} />
+          </main>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );

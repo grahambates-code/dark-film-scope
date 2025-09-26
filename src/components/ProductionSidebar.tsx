@@ -96,7 +96,7 @@ export function ProductionSidebar({ selectedProductionId, onProductionSelect }: 
 
   return (
     <Sidebar className={collapsed ? "w-14" : "w-80"}>
-      <SidebarContent className="bg-sidebar">
+      <SidebarContent className="bg-sidebar pt-[73px]">
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground">
             {!collapsed && "Productions"}
