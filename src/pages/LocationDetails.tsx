@@ -103,25 +103,17 @@ const LocationDetails = () => {
     }
   };
 
-  // Helper function to strip HTML tags and get plain text
-  const stripHtml = (html: string) => {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  };
-
   const handleSubmitComment = async () => {
-    const plainTextContent = stripHtml(newComment).trim();
-    if (!plainTextContent || !user || !locationId) return;
+    if (!newComment.trim() || !user || !locationId) return;
 
     setSubmitting(true);
     try {
-      // Insert comment into database
+      // Insert comment into database with HTML content
       const { data, error } = await supabase
         .from('comments')
         .insert({
           location_id: locationId,
-          content: plainTextContent,
+          content: newComment,
           author: user.email || 'Anonymous User'
         })
         .select()
@@ -256,7 +248,7 @@ const LocationDetails = () => {
               />
               <Button 
                 onClick={handleSubmitComment}
-                disabled={!stripHtml(newComment).trim() || submitting}
+                disabled={!newComment.trim() || submitting}
                 size="sm"
                 className="w-full"
               >
@@ -282,7 +274,10 @@ const LocationDetails = () => {
                           {formatDate(comment.created_at)}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">{comment.content}</p>
+                      <div 
+                        className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: comment.content }}
+                      />
                     </div>
                   </div>
                 </CardContent>
