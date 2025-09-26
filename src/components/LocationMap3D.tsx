@@ -6,6 +6,7 @@ import type { MapViewState } from '@deck.gl/core';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface LocationMap3DProps {
   locationId: string;
@@ -73,14 +74,31 @@ const LocationMap3D = ({
         bearing: viewState.bearing
       };
       
-      const { error } = await supabase
+      // Try to update first, if no row exists it will return no data
+      const { data, error: updateError } = await supabase
         .from('location_camera_position')
         .update({ viewstate: cleanViewState })
-        .eq('location_id', locationId);
+        .eq('location_id', locationId)
+        .select();
       
-      if (error) throw error;
+      // If no rows were updated, create a new record
+      if (!updateError && (!data || data.length === 0)) {
+        const { error: insertError } = await supabase
+          .from('location_camera_position')
+          .insert({ 
+            location_id: locationId, 
+            viewstate: cleanViewState 
+          });
+        
+        if (insertError) throw insertError;
+      } else if (updateError) {
+        throw updateError;
+      }
+      
+      toast.success('Camera position saved successfully!');
     } catch (error) {
       console.error('Error saving viewstate:', error);
+      toast.error('Failed to save camera position. Please try again.');
     } finally {
       setSaving(false);
     }
