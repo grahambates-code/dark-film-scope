@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -143,14 +144,24 @@ const LocationDetails = () => {
       window.open(url, '_blank');
     }
   };
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatRelativeTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
+    
+    if (diffInHours < 24) {
+      // Same day
+      if (diffInHours < 1) {
+        return 'Just now';
+      }
+      return `Today, ${formatDistanceToNow(date)} ago`;
+    } else if (diffInHours < 48) {
+      // Yesterday
+      return 'Yesterday';
+    } else {
+      // More than a day ago
+      return formatDistanceToNow(date, { addSuffix: true });
+    }
   };
   if (authLoading) {
     return <div className="min-h-screen bg-background flex items-center justify-center">
@@ -249,9 +260,9 @@ const LocationDetails = () => {
                         <span className="text-sm font-medium text-card-foreground truncate">
                           {comment.author}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {formatDate(comment.created_at)}
-                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          {formatRelativeTime(comment.created_at)}
+                        </Badge>
                       </div>
                       <div className="text-sm text-muted-foreground prose prose-sm max-w-none" dangerouslySetInnerHTML={{
                     __html: comment.content
