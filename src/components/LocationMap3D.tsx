@@ -29,7 +29,7 @@ const LocationMap3D = ({
     new TileLayer({
       id: 'tile-layer',
       data: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      maxRequests: 20,
+      maxRequests: 6,
       pickable: true,
       highlightColor: [60, 60, 60, 40],
       minZoom: 0,
