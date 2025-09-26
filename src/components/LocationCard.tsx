@@ -124,12 +124,7 @@ const LocationCard = ({
                       <div className="font-medium text-scout-primary text-xl">{comment.author}</div>
                       <div className="text-sm text-scout-text-muted">{comment.role}</div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      {comment.rating && <>
-                          <Star className="w-4 h-4 fill-scout-secondary text-scout-secondary" />
-                          <span className="text-sm text-scout-text-muted">{comment.rating}/5</span>
-                        </>}
-                    </div>
+                    
                   </div>
                   
                   <p className="text-scout-text text-xl leading-relaxed mb-3">
