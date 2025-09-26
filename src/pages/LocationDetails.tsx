@@ -64,6 +64,7 @@ const LocationDetails = () => {
   const [location, setLocation] = useState<Location | null>(null);
   const [production, setProduction] = useState<Production | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [cameraPosition, setCameraPosition] = useState<any>(null);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -132,6 +133,17 @@ const LocationDetails = () => {
       });
       if (commentsError) throw commentsError;
       setComments(commentsData || []);
+
+      // Fetch camera position
+      const {
+        data: cameraData,
+        error: cameraError
+      } = await supabase.from('location_camera_position').select('*').eq('location_id', locId).single();
+      if (cameraError) {
+        console.error('Error fetching camera position:', cameraError);
+      } else {
+        setCameraPosition(cameraData?.viewstate);
+      }
     } catch (error) {
       console.error('Error fetching location details:', error);
     } finally {
@@ -353,6 +365,7 @@ const LocationDetails = () => {
                       <LocationMap3D 
                         latitude={location.latitude || undefined}
                         longitude={location.longitude || undefined}
+                        initialViewState={cameraPosition}
                         className="w-full h-[500px]"
                       />
                       {/* Map indicator */}

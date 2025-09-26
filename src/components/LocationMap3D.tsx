@@ -7,12 +7,14 @@ import type { MapViewState } from '@deck.gl/core';
 interface LocationMap3DProps {
   latitude?: number;
   longitude?: number;
+  initialViewState?: any;
   className?: string;
 }
 
 const LocationMap3D = ({
                          latitude = 40.7128,
                          longitude = -74.0060,
+                         initialViewState,
                          className = ""
                        }: LocationMap3DProps) => {
   const deckRef = useRef(null);
@@ -26,12 +28,16 @@ const LocationMap3D = ({
 
   // Update viewState when props change
   useEffect(() => {
-    setViewState(prev => ({
-      ...prev,
-      longitude,
-      latitude
-    }));
-  }, [latitude, longitude]);
+    if (initialViewState) {
+      setViewState(initialViewState);
+    } else {
+      setViewState(prev => ({
+        ...prev,
+        longitude,
+        latitude
+      }));
+    }
+  }, [latitude, longitude, initialViewState]);
 
   // ✅ Memoize the layer so it's only created when needed
   const layers = useMemo(() => [

@@ -49,6 +49,38 @@ export type Database = {
           },
         ]
       }
+      location_camera_position: {
+        Row: {
+          created_at: string
+          id: string
+          location_id: string
+          updated_at: string
+          viewstate: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location_id: string
+          updated_at?: string
+          viewstate: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location_id?: string
+          updated_at?: string
+          viewstate?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "location_camera_position_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: true
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           address: string | null
