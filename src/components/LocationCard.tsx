@@ -118,7 +118,7 @@ const LocationCard = ({
             handleCommentsScroll(target.scrollTop, maxScrollTop);
           }}>
             <div className="space-y-4 pr-2">
-              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border border-scout-border/30 rounded-lg p-4">
+              {comments.map(comment => <div key={comment.id} className="comment-card bg-scout-surface/90 border-2 border-scout-border rounded-lg p-4 shadow-sm">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="font-medium text-scout-primary text-xl">{comment.author}</div>
