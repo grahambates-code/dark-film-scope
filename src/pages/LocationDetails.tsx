@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, MessageCircle, Send, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,6 +45,7 @@ const LocationDetails = () => {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
 
   // Mock image for now - you can replace with actual location images
   const getLocationImage = (locationName: string) => {
@@ -85,21 +86,15 @@ const LocationDetails = () => {
         setProduction(productionData);
       }
 
-      // Mock comments for now - you can create a comments table later
-      setComments([
-        {
-          id: '1',
-          content: 'Amazing filming location! The scenery was breathtaking during production.',
-          author: 'Film Crew Member',
-          created_at: '2024-01-15T10:30:00Z'
-        },
-        {
-          id: '2',
-          content: 'This place has such great lighting conditions for outdoor scenes.',
-          author: 'Location Scout',
-          created_at: '2024-01-16T14:20:00Z'
-        }
-      ]);
+      // Fetch real comments from database
+      const { data: commentsData, error: commentsError } = await supabase
+        .from('comments')
+        .select('*')
+        .eq('location_id', locId)
+        .order('created_at', { ascending: false });
+
+      if (commentsError) throw commentsError;
+      setComments(commentsData || []);
 
     } catch (error) {
       console.error('Error fetching location details:', error);
@@ -109,19 +104,25 @@ const LocationDetails = () => {
   };
 
   const handleSubmitComment = async () => {
-    if (!newComment.trim() || !user) return;
+    if (!newComment.trim() || !user || !locationId) return;
 
     setSubmitting(true);
     try {
-      // Mock comment submission - implement actual database storage later
-      const mockComment: Comment = {
-        id: Date.now().toString(),
-        content: newComment,
-        author: user.email || 'Anonymous User',
-        created_at: new Date().toISOString()
-      };
-      
-      setComments(prev => [mockComment, ...prev]);
+      // Insert comment into database
+      const { data, error } = await supabase
+        .from('comments')
+        .insert({
+          location_id: locationId,
+          content: newComment.trim(),
+          author: user.email || 'Anonymous User'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Add the new comment to the top of the list
+      setComments(prev => [data, ...prev]);
       setNewComment('');
     } catch (error) {
       console.error('Error submitting comment:', error);
@@ -216,11 +217,25 @@ const LocationDetails = () => {
 
       <div className="flex h-[calc(100vh-73px)]">
         {/* Comments Sidebar - Left */}
-        <div className="w-80 bg-card border-r border-scout-border flex flex-col">
+        <div className={`${commentsExpanded ? 'w-1/2' : 'w-80'} bg-card border-r border-scout-border flex flex-col transition-all duration-300`}>
           <div className="p-4 border-b border-scout-border">
-            <div className="flex items-center gap-2 mb-4">
-              <MessageCircle className="w-5 h-5 text-scout-primary" />
-              <h2 className="font-semibold text-card-foreground">Comments ({comments.length})</h2>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-scout-primary" />
+                <h2 className="font-semibold text-card-foreground">Comments ({comments.length})</h2>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setCommentsExpanded(!commentsExpanded)}
+                className="h-8 w-8 p-0"
+              >
+                {commentsExpanded ? (
+                  <ChevronLeft className="w-4 h-4" />
+                ) : (
+                  <ChevronRight className="w-4 h-4" />
+                )}
+              </Button>
             </div>
             
             {/* New Comment Form */}
