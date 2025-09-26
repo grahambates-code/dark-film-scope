@@ -221,7 +221,7 @@ const LocationDetails = () => {
             variant="ghost" 
             size="sm" 
             onClick={() => setCommentsExpanded(!commentsExpanded)} 
-            className="absolute -right-4 top-4 h-8 w-8 p-0 bg-card border border-scout-border shadow-sm z-10 hover:bg-scout-surface-alt"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bg-card border border-scout-border shadow-sm z-10 hover:bg-scout-surface-alt"
           >
             {commentsExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </Button>
