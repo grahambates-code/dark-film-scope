@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import TiptapEditor from '@/components/TiptapEditor';
+import LocationMap3D from '@/components/LocationMap3D';
 import {
   Carousel,
   CarouselContent,
@@ -341,6 +342,17 @@ const LocationDetails = () => {
 
         {/* Main Content - Center */}
         <div className="flex-1 flex flex-col">
+          {/* 3D Map View */}
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="max-w-4xl w-full">
+              <LocationMap3D 
+                latitude={location.latitude || undefined}
+                longitude={location.longitude || undefined}
+                className="w-full h-[500px] rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
+
           {/* Location Image Carousel */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="max-w-4xl w-full">
