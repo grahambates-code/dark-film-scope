@@ -186,7 +186,15 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
     setIsMapActive(true);
   };
 
-  const handleMapBlur = () => {
+  const handleMapClick = (e: React.MouseEvent) => {
+    // Prevent single clicks from interfering when map is active
+    if (isMapActive) {
+      e.stopPropagation();
+    }
+  };
+
+  const handleOutsideClick = () => {
+    // Only deactivate when clicking outside the map area
     setIsMapActive(false);
   };
 
@@ -281,8 +289,7 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
                 : 'ring-1 ring-border rounded-lg hover:ring-orange-300'
             }`}
             onDoubleClick={handleMapDoubleClick}
-            onBlur={handleMapBlur}
-            tabIndex={0}
+            onClick={handleMapClick}
           >
             <LocationMap3D
               locationId={mapCard.location_id}
@@ -292,11 +299,23 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
               isInteractive={isMapActive}
             />
             {!isMapActive && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/10 rounded-lg backdrop-blur-[1px]">
-                <div className="bg-black/60 text-white px-4 py-2 rounded-lg text-sm font-medium">
+              <div 
+                className="absolute inset-0 flex items-center justify-center bg-black/10 rounded-lg backdrop-blur-[1px]"
+                onDoubleClick={handleMapDoubleClick}
+              >
+                <div className="bg-black/60 text-white px-4 py-2 rounded-lg text-sm font-medium pointer-events-none">
                   Double-click to activate map controls
                 </div>
               </div>
+            )}
+            {isMapActive && (
+              <button
+                onClick={handleOutsideClick}
+                className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 text-white rounded-full text-xs font-bold hover:bg-orange-600 transition-colors"
+                title="Click to deactivate map"
+              >
+                ×
+              </button>
             )}
           </div>
         </div>
