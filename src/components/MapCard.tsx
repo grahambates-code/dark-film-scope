@@ -86,6 +86,7 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
         .from('comments')
         .insert({
           map_card_id: mapCard.id,
+          location_id: mapCard.location_id,
           content: newComment,
           user_id: user.id
         } as any)
