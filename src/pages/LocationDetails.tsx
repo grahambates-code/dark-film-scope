@@ -323,7 +323,7 @@ const LocationDetails = () => {
         </div>
 
         {/* Main Content - Center */}
-        <div className="flex-1 flex flex-col">
+        <div className="w-2/3 flex flex-col">
           {/* Location Carousel - Map + Images */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="max-w-4xl w-full">
