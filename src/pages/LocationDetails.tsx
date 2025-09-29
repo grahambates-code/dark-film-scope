@@ -12,20 +12,8 @@ import TiptapEditor from '@/components/TiptapEditor';
 import CommentRenderer from '@/components/CommentRenderer';
 import LocationMap3D from '@/components/LocationMap3D';
 import { AppHeader } from '@/components/AppHeader';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 // Import location images
 import location1 from '@/assets/location1.jpg';
@@ -93,28 +81,26 @@ const LocationDetails = () => {
   // Get location images based on location name
   const getLocationImages = (locationName: string): string[] => {
     // Map location names to their image arrays
-    const imageMap: { [key: string]: string[] } = {
+    const imageMap: {
+      [key: string]: string[];
+    } = {
       'location1': [location1, location1_2, location1_3],
-      'location2': [location2, location2_2, location2_3], 
+      'location2': [location2, location2_2, location2_3],
       'location3': [location3, location3_2, location3_3]
     };
-    
+
     // Try to match by location name (case insensitive)
     const normalizedName = locationName.toLowerCase().replace(/\s+/g, '');
-    
+
     // Check for partial matches
     for (const [key, images] of Object.entries(imageMap)) {
       if (normalizedName.includes(key) || key.includes(normalizedName)) {
         return images;
       }
     }
-    
+
     // Fallback to location1 images or generate placeholder images
-    return imageMap.location1 || [
-      `https://picsum.photos/seed/${locationName}-1/800/600`,
-      `https://picsum.photos/seed/${locationName}-2/800/600`, 
-      `https://picsum.photos/seed/${locationName}-3/800/600`
-    ];
+    return imageMap.location1 || [`https://picsum.photos/seed/${locationName}-1/800/600`, `https://picsum.photos/seed/${locationName}-2/800/600`, `https://picsum.photos/seed/${locationName}-3/800/600`];
   };
   useEffect(() => {
     if (locationId) {
@@ -202,15 +188,11 @@ const LocationDetails = () => {
       setSubmitting(false);
     }
   };
-
   const handleDeleteComment = async (commentId: string) => {
     try {
-    const { error } = await supabase
-      .from('comments')
-      .delete()
-      .eq('id', commentId)
-      .eq('user_id', user.id);
-      
+      const {
+        error
+      } = await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id);
       if (error) throw error;
 
       // Remove the comment from the local state
@@ -229,7 +211,6 @@ const LocationDetails = () => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
     if (diffInHours < 24) {
       // Same day
       if (diffInHours < 1) {
@@ -241,7 +222,9 @@ const LocationDetails = () => {
       return 'Yesterday';
     } else {
       // More than a day ago
-      return formatDistanceToNow(date, { addSuffix: true });
+      return formatDistanceToNow(date, {
+        addSuffix: true
+      });
     }
   };
   if (authLoading) {
@@ -273,68 +256,40 @@ const LocationDetails = () => {
   }
   return <div className="min-h-screen bg-background">
       {/* Header */}
-      <AppHeader 
-        variant="location" 
-        locationName={location.name} 
-        production={production} 
-      />
+      <AppHeader variant="location" locationName={location.name} production={production} />
 
       <div className="flex h-[calc(100vh-73px)]">
         {/* Comments Sidebar - Left */}
         <div className={`${commentsExpanded ? 'w-1/2' : 'w-80'} bg-card border-r border-scout-border flex flex-col transition-all duration-300 relative`}>
           {/* Toggle Button - Absolutely positioned on right margin */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setCommentsExpanded(!commentsExpanded)} 
-            className="absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bg-card border border-scout-border shadow-sm z-10 hover:bg-scout-surface-alt"
-          >
+          <Button variant="ghost" size="sm" onClick={() => setCommentsExpanded(!commentsExpanded)} className="absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bg-card border border-scout-border shadow-sm z-10 hover:bg-scout-surface-alt">
             {commentsExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </Button>
           
           {/* Add Comment Button - Top Right */}
-          {!commentFormVisible && (
-            <Button 
-              onClick={() => setCommentFormVisible(true)}
-              size="sm"
-              className="absolute top-4 right-4 rounded-full h-10 w-10 p-0 z-20"
-            >
+          {!commentFormVisible && <Button onClick={() => setCommentFormVisible(true)} size="sm" className="absolute top-4 right-4 rounded-full h-10 w-10 p-0 z-20">
               <Send className="w-4 h-4" />
-            </Button>
-          )}
+            </Button>}
           
           <div className="p-4 border-b border-scout-border">
-            {commentFormVisible && (
-              // Expanded Comment Form
-              <div className="space-y-3">
+            {commentFormVisible &&
+          // Expanded Comment Form
+          <div className="space-y-3">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-medium text-card-foreground">Add Comment</h3>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => {
-                      setCommentFormVisible(false);
-                      setNewComment('');
-                    }}
-                    className="h-6 w-6 p-0"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => {
+                setCommentFormVisible(false);
+                setNewComment('');
+              }} className="h-6 w-6 p-0">
                     ×
                   </Button>
                 </div>
-                <TiptapEditor 
-                  content={newComment} 
-                  onChange={setNewComment} 
-                  placeholder="Share your thoughts about this location..." 
-                  className="min-h-[80px]"
-                  viewState={viewState}
-                  onViewStateClick={(viewState) => setViewState(viewState)}
-                />
+                <TiptapEditor content={newComment} onChange={setNewComment} placeholder="Share your thoughts about this location..." className="min-h-[80px]" viewState={viewState} onViewStateClick={viewState => setViewState(viewState)} />
                 <Button onClick={handleSubmitComment} disabled={!newComment.trim() || submitting} size="sm" className="w-full">
                   <Send className="w-4 h-4 mr-2" />
                   {submitting ? 'Posting...' : 'Post Comment'}
                 </Button>
-              </div>
-            )}
+              </div>}
           </div>
 
           {/* Comments List */}
@@ -342,16 +297,9 @@ const LocationDetails = () => {
             {comments.map(comment => <Card key={comment.id} className="bg-background/50 group hover:bg-background/70 transition-colors">
                 <CardContent className="p-3 relative">
                   {/* Delete button - only show on hover and if user owns the comment */}
-                  {user?.id === comment.user_id && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteComment(comment.id)}
-                      className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
-                    >
+                  {user?.id === comment.user_id && <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id)} className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground">
                       <Trash2 className="w-3 h-3" />
-                    </Button>
-                  )}
+                    </Button>}
                   
                   <div className="flex items-start gap-2 mb-2">
                     <User className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
@@ -364,12 +312,9 @@ const LocationDetails = () => {
                           {formatRelativeTime(comment.created_at)}
                         </Badge>
                       </div>
-                      <CommentRenderer 
-                        content={comment.content}
-                        onViewStateClick={(viewState) => {
-                          setViewState(viewState);
-                        }}
-                      />
+                      <CommentRenderer content={comment.content} onViewStateClick={viewState => {
+                    setViewState(viewState);
+                  }} />
                     </div>
                   </div>
                 </CardContent>
@@ -382,22 +327,14 @@ const LocationDetails = () => {
           {/* Location Carousel - Map + Images */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="max-w-4xl w-full">
-              <Carousel 
-                className="w-full"
-                opts={{
-                  watchDrag: false
-                }}
-              >
+              <Carousel className="w-full" opts={{
+              watchDrag: false
+            }}>
                 <CarouselContent>
                   {/* First item: 3D Map */}
                   <CarouselItem>
                     <div className="relative">
-                      <LocationMap3D 
-                        locationId={locationId!}
-                        viewState={viewState}
-                        onViewStateChange={setViewState}
-                        className="w-full h-[500px]"
-                      />
+                      <LocationMap3D locationId={locationId!} viewState={viewState} onViewStateChange={setViewState} className="w-full h-[500px]" />
                       {/* Map indicator */}
                       <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                         Map / {getLocationImages(location.name).length + 1}
@@ -406,25 +343,18 @@ const LocationDetails = () => {
                   </CarouselItem>
                   
                   {/* Remaining items: Images */}
-                  {getLocationImages(location.name).map((imageSrc, index) => (
-                    <CarouselItem key={index}>
+                  {getLocationImages(location.name).map((imageSrc, index) => <CarouselItem key={index}>
                       <div className="relative">
-                        <img 
-                          src={imageSrc} 
-                          alt={`${location.name} - Image ${index + 1}`}
-                          className="w-full h-[500px] object-cover rounded-lg shadow-lg" 
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = 'https://picsum.photos/800/600?grayscale';
-                          }} 
-                        />
+                        <img src={imageSrc} alt={`${location.name} - Image ${index + 1}`} className="w-full h-[500px] object-cover rounded-lg shadow-lg" onError={e => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://picsum.photos/800/600?grayscale';
+                    }} />
                         {/* Image counter */}
                         <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                           {index + 2} / {getLocationImages(location.name).length + 1}
                         </div>
                       </div>
-                    </CarouselItem>
-                  ))}
+                    </CarouselItem>)}
                 </CarouselContent>
                 <CarouselPrevious className="left-4" />
                 <CarouselNext className="right-4" />
@@ -433,29 +363,7 @@ const LocationDetails = () => {
           </div>
 
           {/* Location Details - Bottom */}
-          <div className="p-6 border-t border-scout-border bg-card">
-            <div className="max-w-4xl">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-semibold text-card-foreground mb-3">Location Details</h3>
-                  <div className="space-y-2 text-sm">
-                    {location.address && <div className="flex items-start gap-2">
-                        <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                        <span className="text-muted-foreground">{location.address}</span>
-                      </div>}
-                    {location.description && <p className="text-card-foreground mt-3">{location.description}</p>}
-                  </div>
-                </div>
-
-                <div className="flex items-end justify-end">
-                  {location.latitude && location.longitude && <Button onClick={openInMaps} variant="outline" className="gap-2">
-                      <Navigation className="w-4 h-4" />
-                      View on Map
-                    </Button>}
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>;
