@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import { Film, LogOut, Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Film } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
-import { ProductionSidebar } from '@/components/ProductionSidebar';
 import { LocationsList } from '@/components/LocationsList';
-import { SidebarProvider, SidebarTrigger, SidebarInset, useSidebar } from '@/components/ui/sidebar';
 import { AppHeader } from '@/components/AppHeader';
 const Index = () => {
   const { user, loading } = useAuth();
@@ -27,42 +24,28 @@ const Index = () => {
     return <AuthForm onAuthSuccess={() => {}} />;
   }
 
-  return (
-    <SidebarProvider>
-      <IndexContent />
-    </SidebarProvider>
-  );
+  return <IndexContent />;
 };
 
 const IndexContent = () => {
   const [selectedProductionId, setSelectedProductionId] = useState<string | null>(null);
-  const { setOpen } = useSidebar();
 
   const handleProductionSelect = (productionId: string) => {
     setSelectedProductionId(productionId);
-    setOpen(false); // Collapse sidebar when production is selected
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-background">
+    <div className="min-h-screen w-full bg-background">
       {/* Header */}
       <AppHeader variant="home" />
 
-      {/* Sidebar */}
-      <ProductionSidebar 
-        selectedProductionId={selectedProductionId}
-        onProductionSelect={handleProductionSelect}
-      />
-
       {/* Main Content */}
-      <SidebarInset>
-        <main className="flex-1 pt-[73px] pl-12">
-          <LocationsList 
-            productionId={selectedProductionId}
-            onProductionSelect={handleProductionSelect}
-          />
-        </main>
-      </SidebarInset>
+      <main className="pt-[73px] px-6">
+        <LocationsList 
+          productionId={selectedProductionId}
+          onProductionSelect={handleProductionSelect}
+        />
+      </main>
     </div>
   );
 };
