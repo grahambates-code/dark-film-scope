@@ -13,13 +13,15 @@ interface LocationMap3DProps {
   viewState: any;
   onViewStateChange: (viewState: any) => void;
   className?: string;
+  isInteractive?: boolean;
 }
 
 const LocationMap3D = ({
                          locationId,
                          viewState,
                          onViewStateChange,
-                         className = ""
+                         className = "",
+                         isInteractive = true
                        }: LocationMap3DProps) => {
   const deckRef = useRef(null);
   const [saving, setSaving] = useState(false);
@@ -51,8 +53,10 @@ const LocationMap3D = ({
 
   // Debounced viewstate change handler
   const handleViewStateChange = useCallback(({ viewState: newViewState }: any) => {
-    onViewStateChange(newViewState);
-  }, [onViewStateChange]);
+    if (isInteractive) {
+      onViewStateChange(newViewState);
+    }
+  }, [onViewStateChange, isInteractive]);
 
   const saveViewState = async () => {
     setSaving(true);
@@ -106,14 +110,14 @@ const LocationMap3D = ({
               // Remove transition duration for smooth interactions
               //transitionDuration: isInteracting ? 0 : 300,
             }
-            controller={{
+            controller={isInteractive ? {
               dragRotate: true,
               touchRotate: true,
               keyboard: true,
              scrollZoom: { speed: 0.1, smooth: false },
               doubleClickZoom: true,
               touchZoom: true
-            }}
+            } : false}
             onViewStateChange={handleViewStateChange}
             onDragStart={() => setIsInteracting(true)}
             onDragEnd={() => setIsInteracting(false)}

@@ -47,6 +47,7 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
   const [commentFormVisible, setCommentFormVisible] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState(mapCard.title || '');
+  const [isMapActive, setIsMapActive] = useState(false);
   const [viewState, setViewState] = useState(mapCard.viewstate || {
     longitude: -74.0060,
     latitude: 40.7128,
@@ -165,6 +166,8 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
   };
 
   const handleViewStateChange = async (newViewState: any) => {
+    if (!isMapActive) return; // Only allow viewstate changes when map is active
+    
     setViewState(newViewState);
     
     // Auto-save viewstate changes
@@ -177,6 +180,14 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
     } catch (error) {
       console.error('Error saving viewstate:', error);
     }
+  };
+
+  const handleMapDoubleClick = () => {
+    setIsMapActive(true);
+  };
+
+  const handleMapBlur = () => {
+    setIsMapActive(false);
   };
 
   const formatRelativeTime = (dateString: string) => {
@@ -263,12 +274,31 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
       <CardContent className="space-y-6">
         {/* Map Section */}
         <div className="relative">
-          <LocationMap3D
-            locationId={mapCard.location_id}
-            viewState={viewState}
-            onViewStateChange={handleViewStateChange}
-            className="w-full h-[400px]"
-          />
+          <div 
+            className={`relative transition-all duration-200 ${
+              isMapActive 
+                ? 'ring-2 ring-orange-500 rounded-lg' 
+                : 'ring-1 ring-border rounded-lg hover:ring-orange-300'
+            }`}
+            onDoubleClick={handleMapDoubleClick}
+            onBlur={handleMapBlur}
+            tabIndex={0}
+          >
+            <LocationMap3D
+              locationId={mapCard.location_id}
+              viewState={viewState}
+              onViewStateChange={handleViewStateChange}
+              className="w-full h-[400px] rounded-lg"
+              isInteractive={isMapActive}
+            />
+            {!isMapActive && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/10 rounded-lg backdrop-blur-[1px]">
+                <div className="bg-black/60 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                  Double-click to activate map controls
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Comments Section */}
