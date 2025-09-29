@@ -77,19 +77,15 @@ export function AppHeader({ variant = 'home', locationName, production, classNam
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1">
-          {production && (
-            <h1 className="text-xl font-bold text-scout-primary">{production.title}</h1>
-          )}
-          <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary" className="text-xs">
-              {locationName}
-            </Badge>
+          <h1 className="text-xl font-bold text-scout-primary">
             {production && (
-              <Badge variant="outline" className="text-xs">
-                {production.type.replace('tv_show', 'TV Show').replace('_', ' ')}
-              </Badge>
+              <>
+                {production.title}
+                <span className="text-scout-text mx-2">/</span>
+                {locationName}
+              </>
             )}
-          </div>
+          </h1>
         </div>
         
         <AccountDropdown />
