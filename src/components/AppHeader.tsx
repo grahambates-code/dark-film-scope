@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { SidebarTrigger } from '@/components/ui/sidebar';
+
 
 interface AppHeaderProps {
   variant?: 'home' | 'location';
@@ -58,7 +58,6 @@ export function AppHeader({ variant = 'home', locationName, production, classNam
       <header className={`fixed top-0 left-0 right-0 z-50 bg-scout-surface/95 backdrop-blur-sm border-b border-scout-border ${className || ''}`}>
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <SidebarTrigger className="mr-2" />
             <Film className="w-6 h-6 text-scout-primary" />
             <h1 className="text-lg font-bold text-scout-primary">FilmScout Pro</h1>
           </div>
