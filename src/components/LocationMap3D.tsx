@@ -104,7 +104,7 @@ const LocationMap3D = ({
             viewState={{
               ...viewState,
               // Remove transition duration for smooth interactions
-              transitionDuration: isInteracting ? 0 : 300,
+              //transitionDuration: isInteracting ? 0 : 300,
             }}
             controller={{
               dragRotate: true,
