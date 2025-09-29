@@ -7,6 +7,7 @@ import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import { AppHeader } from '@/components/AppHeader';
 import MapCard from '@/components/MapCard';
+import CardTypeSelector from '@/components/CardTypeSelector';
 
 interface Location {
   id: string;
@@ -44,6 +45,7 @@ const LocationDetails = () => {
   const [mapCards, setMapCards] = useState<MapCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [showCardTypeSelector, setShowCardTypeSelector] = useState(false);
 
   useEffect(() => {
     if (locationId) {
@@ -93,40 +95,55 @@ const LocationDetails = () => {
       setLoading(false);
     }
   };
-  const handleCreateCard = async () => {
+  const handleShowCardSelector = () => {
+    setShowCardTypeSelector(true);
+  };
+
+  const handleCancelCardCreation = () => {
+    setShowCardTypeSelector(false);
+  };
+
+  const handleCreateCard = async (cardType: 'map' | 'image') => {
     if (!user || !locationId) return;
 
     setCreating(true);
+    setShowCardTypeSelector(false);
+    
     try {
-      const { data, error } = await supabase
-        .from('map_cards')
-        .insert({
-          location_id: locationId,
-          title: 'New Map Card',
-          viewstate: {
-            longitude: location?.longitude || -74.0060,
-            latitude: location?.latitude || 40.7128,
-            zoom: 15,
-            pitch: 0,
-            bearing: 0
-          },
-          user_id: user.id
-        })
-        .select()
-        .single();
+      if (cardType === 'map') {
+        const { data, error } = await supabase
+          .from('map_cards')
+          .insert({
+            location_id: locationId,
+            title: 'New Map Card',
+            viewstate: {
+              longitude: location?.longitude || -74.0060,
+              latitude: location?.latitude || 40.7128,
+              zoom: 15,
+              pitch: 0,
+              bearing: 0
+            },
+            user_id: user.id
+          })
+          .select()
+          .single();
 
-      if (error) throw error;
-      setMapCards(prev => [...prev, data]);
-      
-      // Scroll to the new card after a brief delay to ensure it's rendered
-      setTimeout(() => {
-        const newCardElement = document.getElementById(`map-card-${data.id}`);
-        if (newCardElement) {
-          newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
+        if (error) throw error;
+        setMapCards(prev => [...prev, data]);
+        
+        // Scroll to the new card after a brief delay to ensure it's rendered
+        setTimeout(() => {
+          const newCardElement = document.getElementById(`map-card-${data.id}`);
+          if (newCardElement) {
+            newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+      } else if (cardType === 'image') {
+        // TODO: Implement image card creation
+        console.log('Image card creation not yet implemented');
+      }
     } catch (error) {
-      console.error('Error creating map card:', error);
+      console.error('Error creating card:', error);
     } finally {
       setCreating(false);
     }
@@ -175,6 +192,16 @@ const LocationDetails = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
+        {/* Card Type Selector */}
+        {showCardTypeSelector && (
+          <div className="mb-8">
+            <CardTypeSelector
+              onSelectType={handleCreateCard}
+              onCancel={handleCancelCardCreation}
+            />
+          </div>
+        )}
+
         {/* Map Cards */}
         <div className="space-y-8">
           {mapCards.map((mapCard) => (
@@ -187,7 +214,7 @@ const LocationDetails = () => {
             </div>
           ))}
 
-          {mapCards.length === 0 && (
+          {mapCards.length === 0 && !showCardTypeSelector && (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No map cards yet. Create your first one!</p>
             </div>
@@ -195,17 +222,19 @@ const LocationDetails = () => {
         </div>
 
         {/* Add New Card Button */}
-        <div className="flex justify-center mt-8">
-          <Button
-            onClick={handleCreateCard}
-            disabled={creating}
-            size="lg"
-            className="px-8 py-3"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            {creating ? 'Creating...' : 'Add New Card'}
-          </Button>
-        </div>
+        {!showCardTypeSelector && (
+          <div className="flex justify-center mt-8">
+            <Button
+              onClick={handleShowCardSelector}
+              disabled={creating}
+              size="lg"
+              className="px-8 py-3"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              {creating ? 'Creating...' : 'Add New Card'}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
