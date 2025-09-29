@@ -110,7 +110,7 @@ const LocationMap3D = ({
               dragRotate: true,
               touchRotate: true,
               keyboard: true,
-             scrollZoom: { speed: 0.1, smooth: true },
+             scrollZoom: { speed: 0.1, smooth: false },
               doubleClickZoom: true,
               touchZoom: true
             }}
