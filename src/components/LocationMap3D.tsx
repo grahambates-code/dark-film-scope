@@ -102,7 +102,7 @@ const LocationMap3D = ({
             ref={deckRef}
             layers={layers}
             viewState={
-              viewState,
+              viewState
               // Remove transition duration for smooth interactions
               //transitionDuration: isInteracting ? 0 : 300,
             }
