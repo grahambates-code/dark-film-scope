@@ -74,21 +74,22 @@ export function AppHeader({ variant = 'home', locationName, production, classNam
     <header className={`bg-scout-surface/95 backdrop-blur-sm border-b border-scout-border p-4 ${className || ''}`}>
       <div className="flex items-center gap-4">
         <Button onClick={() => navigate('/')} variant="ghost" size="sm" className="text-scout-text hover:bg-scout-surface-alt">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
+          <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-scout-primary">{locationName}</h1>
           {production && (
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary" className="text-xs">
-                {production.title}
-              </Badge>
+            <h1 className="text-xl font-bold text-scout-primary">{production.title}</h1>
+          )}
+          <div className="flex items-center gap-2 mt-1">
+            <Badge variant="secondary" className="text-xs">
+              {locationName}
+            </Badge>
+            {production && (
               <Badge variant="outline" className="text-xs">
                 {production.type.replace('tv_show', 'TV Show').replace('_', ' ')}
               </Badge>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         
         <AccountDropdown />
