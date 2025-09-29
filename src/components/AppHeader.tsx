@@ -80,7 +80,7 @@ export function AppHeader({ variant = 'home', locationName, production, classNam
           <h1 className="text-xl font-bold text-scout-primary">
             {production && (
               <>
-                {production.title}
+                <span className="text-muted-foreground">{production.title}</span>
                 <span className="text-scout-text mx-2">/</span>
                 {locationName}
               </>
