@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           location_id: string
+          map_card_id: string | null
           updated_at: string
           user_id: string
         }
@@ -28,6 +29,7 @@ export type Database = {
           created_at?: string
           id?: string
           location_id: string
+          map_card_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -36,6 +38,7 @@ export type Database = {
           created_at?: string
           id?: string
           location_id?: string
+          map_card_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -131,6 +134,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      map_cards: {
+        Row: {
+          created_at: string
+          id: string
+          location_id: string
+          title: string | null
+          updated_at: string
+          user_id: string
+          viewstate: Json | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location_id: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          viewstate?: Json | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location_id?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          viewstate?: Json | null
+        }
+        Relationships: []
       }
       productions: {
         Row: {
