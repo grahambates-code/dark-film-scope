@@ -60,6 +60,13 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
     fetchComments();
   }, [mapCard.id]);
 
+  // Update viewState when mapCard.viewstate changes (on refresh or data load)
+  useEffect(() => {
+    if (mapCard.viewstate) {
+      setViewState(mapCard.viewstate);
+    }
+  }, [mapCard.viewstate]);
+
   const fetchComments = async () => {
     try {
       const { data: commentsData, error } = await supabase
