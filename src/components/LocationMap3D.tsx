@@ -100,6 +100,10 @@ const LocationMap3D = ({
     }
   };
 
+  const handleSaveDoubleClick = () => {
+    saveViewState();
+  };
+
   return (
       <div className={`bg-white relative ${className}`} style={{ height: '500px', width: '100%' }}>
         <DeckGL
@@ -125,10 +129,11 @@ const LocationMap3D = ({
 
         {/* Save button */}
         <Button
-          onClick={saveViewState}
+          onDoubleClick={handleSaveDoubleClick}
           disabled={saving}
           size="sm"
           className="absolute bottom-4 right-4 h-8 w-8 p-0"
+          title="Double-click to save camera position"
         >
           <Save className="w-4 h-4" />
         </Button>
