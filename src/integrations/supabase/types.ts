@@ -137,6 +137,7 @@ export type Database = {
       }
       map_cards: {
         Row: {
+          card_type: string | null
           created_at: string
           id: string
           images: Json | null
@@ -147,6 +148,7 @@ export type Database = {
           viewstate: Json | null
         }
         Insert: {
+          card_type?: string | null
           created_at?: string
           id?: string
           images?: Json | null
@@ -157,6 +159,7 @@ export type Database = {
           viewstate?: Json | null
         }
         Update: {
+          card_type?: string | null
           created_at?: string
           id?: string
           images?: Json | null

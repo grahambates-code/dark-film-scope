@@ -37,6 +37,7 @@ interface MapCardData {
   created_at: string;
   updated_at: string;
   card_type?: 'map' | 'image' | null;
+  images?: string[];
 }
 const LocationDetails = () => {
   const { locationId } = useParams<{ locationId: string }>();
@@ -88,7 +89,11 @@ const LocationDetails = () => {
         .order('created_at', { ascending: false });
       
       if (mapCardsError) throw mapCardsError;
-      setMapCards(mapCardsData || []);
+      setMapCards((mapCardsData || []).map(card => ({
+        ...card,
+        card_type: card.card_type as 'map' | 'image' | null,
+        images: Array.isArray(card.images) ? card.images as string[] : []
+      })));
 
     } catch (error) {
       console.error('Error fetching location details:', error);
@@ -123,7 +128,11 @@ const LocationDetails = () => {
       if (error) throw error;
       
       // Add card with null type to show selector
-      setMapCards(prev => [...prev, { ...data, card_type: null }]);
+      setMapCards(prev => [...prev, { 
+        ...data, 
+        card_type: null,
+        images: []
+      }]);
       
       // Scroll to the new card
       setTimeout(() => {
@@ -145,14 +154,20 @@ const LocationDetails = () => {
       card.id === cardId ? { ...card, card_type: cardType } : card
     ));
     
-    // Update title based on type
+    // Update title and card_type based on type
     try {
       const { error } = await supabase
         .from('map_cards')
-        .update({ title: cardType === 'map' ? 'New Map Card' : 'New Image Card' })
+        .update({ 
+          title: cardType === 'map' ? 'New Map Card' : 'New Image Card',
+          card_type: cardType
+        })
         .eq('id', cardId);
       
       if (error) throw error;
+      
+      // Update local state with the card_type
+      handleUpdateCard(cardId, { card_type: cardType });
     } catch (error) {
       console.error('Error updating card type:', error);
     }
