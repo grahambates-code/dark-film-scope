@@ -325,16 +325,16 @@ const LocationDetails = () => {
         {/* Main Content - Center */}
         <div className="w-2/3 flex flex-col">
           {/* Location Carousel - Map + Images */}
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="max-w-4xl w-full">
-              <Carousel className="w-full" opts={{
+          <div className="flex-1 flex flex-col p-8">
+            <div className="flex-1 w-full">
+              <Carousel className="w-full h-full" opts={{
               watchDrag: false
             }}>
-                <CarouselContent>
+                <CarouselContent className="h-full">
                   {/* First item: 3D Map */}
-                  <CarouselItem>
-                    <div className="relative">
-                      <LocationMap3D locationId={locationId!} viewState={viewState} onViewStateChange={setViewState} className="w-full h-[500px]" />
+                  <CarouselItem className="h-full">
+                    <div className="relative h-full">
+                      <LocationMap3D locationId={locationId!} viewState={viewState} onViewStateChange={setViewState} className="w-full h-full" />
                       {/* Map indicator */}
                       <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                         Map / {getLocationImages(location.name).length + 1}
@@ -343,9 +343,9 @@ const LocationDetails = () => {
                   </CarouselItem>
                   
                   {/* Remaining items: Images */}
-                  {getLocationImages(location.name).map((imageSrc, index) => <CarouselItem key={index}>
-                      <div className="relative">
-                        <img src={imageSrc} alt={`${location.name} - Image ${index + 1}`} className="w-full h-[500px] object-cover rounded-lg shadow-lg" onError={e => {
+                  {getLocationImages(location.name).map((imageSrc, index) => <CarouselItem key={index} className="h-full">
+                      <div className="relative h-full">
+                        <img src={imageSrc} alt={`${location.name} - Image ${index + 1}`} className="w-full h-full object-cover rounded-lg shadow-lg" onError={e => {
                       const target = e.target as HTMLImageElement;
                       target.src = 'https://picsum.photos/800/600?grayscale';
                     }} />
