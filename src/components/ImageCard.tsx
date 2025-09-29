@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +25,7 @@ interface ImageCardData {
   user_id: string;
   created_at: string;
   updated_at: string;
+  images?: string[];
 }
 
 interface ImageCardProps {
@@ -36,9 +38,13 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(mapCard.title || '');
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(mapCard.images || []);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    setImages(mapCard.images || []);
+  }, [mapCard.images]);
 
   const handleTitleSave = async () => {
     if (!title.trim()) return;
@@ -69,7 +75,7 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${user.id}/${mapCard.id}/${Date.now()}.${fileExt}`;
 
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('location-images')
           .upload(fileName, file);
 
@@ -82,9 +88,22 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
         newImageUrls.push(publicUrl);
       }
 
-      setImages(prev => [...prev, ...newImageUrls]);
+      const updatedImages = [...images, ...newImageUrls];
+      setImages(updatedImages);
+
+      // Save to database
+      const { error } = await supabase
+        .from('map_cards')
+        .update({ images: updatedImages })
+        .eq('id', mapCard.id);
+
+      if (error) throw error;
+      
+      onUpdate(mapCard.id, { images: updatedImages });
+      toast.success('Images uploaded successfully');
     } catch (error) {
       console.error('Error uploading images:', error);
+      toast.error('Failed to upload images');
     } finally {
       setUploading(false);
     }
