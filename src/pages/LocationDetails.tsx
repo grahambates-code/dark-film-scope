@@ -7,6 +7,7 @@ import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import { AppHeader } from '@/components/AppHeader';
 import MapCard from '@/components/MapCard';
+import ImageCard from '@/components/ImageCard';
 import CardTypeSelector from '@/components/CardTypeSelector';
 
 interface Location {
@@ -224,8 +225,14 @@ const LocationDetails = () => {
                   onSelectType={(type) => handleSelectCardType(mapCard.id, type)}
                   onCancel={() => handleCancelCardType(mapCard.id)}
                 />
-              ) : (
+              ) : mapCard.card_type === 'map' ? (
                 <MapCard
+                  mapCard={mapCard}
+                  onDelete={handleDeleteCard}
+                  onUpdate={handleUpdateCard}
+                />
+              ) : (
+                <ImageCard
                   mapCard={mapCard}
                   onDelete={handleDeleteCard}
                   onUpdate={handleUpdateCard}
