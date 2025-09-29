@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { ProductionSelector } from './ProductionSelector';
 
 interface Location {
   id: string;
@@ -26,9 +27,10 @@ interface Production {
 
 interface LocationsListProps {
   productionId: string | null;
+  onProductionSelect: (productionId: string) => void;
 }
 
-export function LocationsList({ productionId }: LocationsListProps) {
+export function LocationsList({ productionId, onProductionSelect }: LocationsListProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [production, setProduction] = useState<Production | null>(null);
   const [loading, setLoading] = useState(false);
@@ -107,7 +109,11 @@ export function LocationsList({ productionId }: LocationsListProps) {
       {production && (
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-2xl font-bold text-foreground">{production.title}</h1>
+            <ProductionSelector 
+              selectedProductionId={productionId}
+              onProductionSelect={onProductionSelect}
+              className="flex-shrink-0"
+            />
             <Badge variant="secondary" className="text-xs">
               {production.type.replace('tv_show', 'TV Show').replace('_', ' ')}
             </Badge>

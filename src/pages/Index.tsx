@@ -57,7 +57,10 @@ const IndexContent = () => {
       {/* Main Content */}
       <SidebarInset>
         <main className="flex-1 pt-[73px] pl-12">
-          <LocationsList productionId={selectedProductionId} />
+          <LocationsList 
+            productionId={selectedProductionId}
+            onProductionSelect={handleProductionSelect}
+          />
         </main>
       </SidebarInset>
     </div>
