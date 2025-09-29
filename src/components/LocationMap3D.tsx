@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import DeckGL from '@deck.gl/react';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
@@ -23,13 +23,14 @@ const LocationMap3D = ({
                        }: LocationMap3DProps) => {
   const deckRef = useRef(null);
   const [saving, setSaving] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
 
   // ✅ Memoize the layer so it's only created when needed
   const layers = useMemo(() => [
     new TileLayer({
       id: 'tile-layer',
       data: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      maxRequests: 6,
+      maxRequests: 8,
       pickable: true,
       highlightColor: [60, 60, 60, 40],
       minZoom: 0,
@@ -47,6 +48,11 @@ const LocationMap3D = ({
       },
     })
   ], []); // Empty dependency array since the layer config is static
+
+  // Debounced viewstate change handler
+  const handleViewStateChange = useCallback(({ viewState: newViewState }: any) => {
+    onViewStateChange(newViewState);
+  }, [onViewStateChange]);
 
   const saveViewState = async () => {
     setSaving(true);
@@ -97,11 +103,20 @@ const LocationMap3D = ({
             layers={layers}
             viewState={{
               ...viewState,
-              transitionDuration: 1000,
-             // transitionInterpolator: null
+              // Remove transition duration for smooth interactions
+              transitionDuration: isInteracting ? 0 : 300,
             }}
-            controller={true}
-            onViewStateChange={({ viewState: newViewState }: any) => onViewStateChange(newViewState)}
+            controller={{
+              dragRotate: true,
+              touchRotate: true,
+              keyboard: true,
+              scrollZoom: { speed: 0.01, smooth: true },
+              doubleClickZoom: true,
+              touchZoom: true
+            }}
+            onViewStateChange={handleViewStateChange}
+            onDragStart={() => setIsInteracting(true)}
+            onDragEnd={() => setIsInteracting(false)}
         />
 
         {/* Save button */}
