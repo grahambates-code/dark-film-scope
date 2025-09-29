@@ -35,6 +35,7 @@ interface MapCardData {
   user_id: string;
   created_at: string;
   updated_at: string;
+  card_type?: 'map' | 'image' | null;
 }
 const LocationDetails = () => {
   const { locationId } = useParams<{ locationId: string }>();
@@ -45,7 +46,6 @@ const LocationDetails = () => {
   const [mapCards, setMapCards] = useState<MapCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [showCardTypeSelector, setShowCardTypeSelector] = useState(false);
 
   useEffect(() => {
     if (locationId) {
@@ -95,57 +95,80 @@ const LocationDetails = () => {
       setLoading(false);
     }
   };
-  const handleShowCardSelector = () => {
-    setShowCardTypeSelector(true);
-  };
-
-  const handleCancelCardCreation = () => {
-    setShowCardTypeSelector(false);
-  };
-
-  const handleCreateCard = async (cardType: 'map' | 'image') => {
+  const handleCreateCard = async () => {
     if (!user || !locationId) return;
 
     setCreating(true);
-    setShowCardTypeSelector(false);
     
     try {
-      if (cardType === 'map') {
-        const { data, error } = await supabase
-          .from('map_cards')
-          .insert({
-            location_id: locationId,
-            title: 'New Map Card',
-            viewstate: {
-              longitude: location?.longitude || -74.0060,
-              latitude: location?.latitude || 40.7128,
-              zoom: 15,
-              pitch: 0,
-              bearing: 0
-            },
-            user_id: user.id
-          })
-          .select()
-          .single();
+      // Create card immediately without a type
+      const { data, error } = await supabase
+        .from('map_cards')
+        .insert({
+          location_id: locationId,
+          title: 'New Card',
+          viewstate: {
+            longitude: location?.longitude || -74.0060,
+            latitude: location?.latitude || 40.7128,
+            zoom: 15,
+            pitch: 0,
+            bearing: 0
+          },
+          user_id: user.id
+        })
+        .select()
+        .single();
 
-        if (error) throw error;
-        setMapCards(prev => [...prev, data]);
-        
-        // Scroll to the new card after a brief delay to ensure it's rendered
-        setTimeout(() => {
-          const newCardElement = document.getElementById(`map-card-${data.id}`);
-          if (newCardElement) {
-            newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-      } else if (cardType === 'image') {
-        // TODO: Implement image card creation
-        console.log('Image card creation not yet implemented');
-      }
+      if (error) throw error;
+      
+      // Add card with null type to show selector
+      setMapCards(prev => [...prev, { ...data, card_type: null }]);
+      
+      // Scroll to the new card
+      setTimeout(() => {
+        const newCardElement = document.getElementById(`map-card-${data.id}`);
+        if (newCardElement) {
+          newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
     } catch (error) {
       console.error('Error creating card:', error);
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleSelectCardType = async (cardId: string, cardType: 'map' | 'image') => {
+    // Update the card type locally
+    setMapCards(prev => prev.map(card => 
+      card.id === cardId ? { ...card, card_type: cardType } : card
+    ));
+    
+    // Update title based on type
+    try {
+      const { error } = await supabase
+        .from('map_cards')
+        .update({ title: cardType === 'map' ? 'New Map Card' : 'New Image Card' })
+        .eq('id', cardId);
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating card type:', error);
+    }
+  };
+
+  const handleCancelCardType = async (cardId: string) => {
+    // Delete the card if they cancel
+    try {
+      const { error } = await supabase
+        .from('map_cards')
+        .delete()
+        .eq('id', cardId);
+      
+      if (error) throw error;
+      setMapCards(prev => prev.filter(card => card.id !== cardId));
+    } catch (error) {
+      console.error('Error deleting card:', error);
     }
   };
 
@@ -192,49 +215,44 @@ const LocationDetails = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* Card Type Selector */}
-        {showCardTypeSelector && (
-          <div className="mb-8">
-            <CardTypeSelector
-              onSelectType={handleCreateCard}
-              onCancel={handleCancelCardCreation}
-            />
-          </div>
-        )}
-
-        {/* Map Cards */}
+        {/* Cards */}
         <div className="space-y-8">
           {mapCards.map((mapCard) => (
             <div key={mapCard.id} id={`map-card-${mapCard.id}`}>
-              <MapCard
-                mapCard={mapCard}
-                onDelete={handleDeleteCard}
-                onUpdate={handleUpdateCard}
-              />
+              {mapCard.card_type === null ? (
+                <CardTypeSelector
+                  onSelectType={(type) => handleSelectCardType(mapCard.id, type)}
+                  onCancel={() => handleCancelCardType(mapCard.id)}
+                />
+              ) : (
+                <MapCard
+                  mapCard={mapCard}
+                  onDelete={handleDeleteCard}
+                  onUpdate={handleUpdateCard}
+                />
+              )}
             </div>
           ))}
 
-          {mapCards.length === 0 && !showCardTypeSelector && (
+          {mapCards.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No map cards yet. Create your first one!</p>
+              <p className="text-muted-foreground mb-4">No cards yet. Create your first one!</p>
             </div>
           )}
         </div>
 
         {/* Add New Card Button */}
-        {!showCardTypeSelector && (
-          <div className="flex justify-center mt-8">
-            <Button
-              onClick={handleShowCardSelector}
-              disabled={creating}
-              size="lg"
-              className="px-8 py-3"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              {creating ? 'Creating...' : 'Add New Card'}
-            </Button>
-          </div>
-        )}
+        <div className="flex justify-center mt-8">
+          <Button
+            onClick={handleCreateCard}
+            disabled={creating}
+            size="lg"
+            className="px-8 py-3"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            {creating ? 'Creating...' : 'Add New Card'}
+          </Button>
+        </div>
       </div>
     </div>
   );
