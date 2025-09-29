@@ -86,7 +86,7 @@ const LocationDetails = () => {
         .from('map_cards')
         .select('*')
         .eq('location_id', locId)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: true });
       
       if (mapCardsError) throw mapCardsError;
       setMapCards((mapCardsData || []).map(card => ({
