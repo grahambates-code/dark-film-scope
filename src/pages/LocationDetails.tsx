@@ -116,7 +116,15 @@ const LocationDetails = () => {
         .single();
 
       if (error) throw error;
-      setMapCards(prev => [data, ...prev]);
+      setMapCards(prev => [...prev, data]);
+      
+      // Scroll to the new card after a brief delay to ensure it's rendered
+      setTimeout(() => {
+        const newCardElement = document.getElementById(`map-card-${data.id}`);
+        if (newCardElement) {
+          newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
     } catch (error) {
       console.error('Error creating map card:', error);
     } finally {
@@ -170,12 +178,13 @@ const LocationDetails = () => {
         {/* Map Cards */}
         <div className="space-y-8">
           {mapCards.map((mapCard) => (
-            <MapCard
-              key={mapCard.id}
-              mapCard={mapCard}
-              onDelete={handleDeleteCard}
-              onUpdate={handleUpdateCard}
-            />
+            <div key={mapCard.id} id={`map-card-${mapCard.id}`}>
+              <MapCard
+                mapCard={mapCard}
+                onDelete={handleDeleteCard}
+                onUpdate={handleUpdateCard}
+              />
+            </div>
           ))}
 
           {mapCards.length === 0 && (
