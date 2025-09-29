@@ -101,11 +101,11 @@ const LocationMap3D = ({
         <DeckGL
             ref={deckRef}
             layers={layers}
-            viewState={{
-              ...viewState,
+            viewState={
+              viewState,
               // Remove transition duration for smooth interactions
               //transitionDuration: isInteracting ? 0 : 300,
-            }}
+            }
             controller={{
               dragRotate: true,
               touchRotate: true,
