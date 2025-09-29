@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Film } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import AuthForm from '@/components/AuthForm';
 import { LocationsList } from '@/components/LocationsList';
 import { AppHeader } from '@/components/AppHeader';
+import { supabase } from '@/integrations/supabase/client';
 const Index = () => {
   const { user, loading } = useAuth();
 
@@ -29,6 +30,33 @@ const Index = () => {
 
 const IndexContent = () => {
   const [selectedProductionId, setSelectedProductionId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch the first production on mount
+    const fetchFirstProduction = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('productions')
+          .select('id')
+          .order('created_at')
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error fetching first production:', error);
+          return;
+        }
+
+        if (data) {
+          setSelectedProductionId(data.id);
+        }
+      } catch (error) {
+        console.error('Error fetching first production:', error);
+      }
+    };
+
+    fetchFirstProduction();
+  }, []);
 
   const handleProductionSelect = (productionId: string) => {
     setSelectedProductionId(productionId);
