@@ -91,7 +91,7 @@ const LocationMap3D = ({
   };
 
   return (
-      <div className={`bg-white relative ${className}`} style={{ height: '100%', width: '100%' }}>
+      <div className={`bg-white relative ${className}`} style={{ height: '500px', width: '100%' }}>
         <DeckGL
             ref={deckRef}
             layers={layers}
