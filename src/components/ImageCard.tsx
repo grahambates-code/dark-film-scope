@@ -132,62 +132,10 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
   };
 
   return (
-    <Card className="w-full shadow-md">
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <div className="flex-1">
-          {isEditing ? (
-            <div className="flex gap-2">
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Card title"
-                className="max-w-md"
-              />
-              <Button onClick={handleTitleSave} size="sm">
-                Save
-              </Button>
-              <Button
-                onClick={() => setIsEditing(false)}
-                variant="outline"
-                size="sm"
-              >
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <h3
-              className="text-xl font-semibold cursor-pointer hover:text-primary"
-              onClick={() => setIsEditing(true)}
-            >
-              {mapCard.title || 'Untitled Image Card'}
-            </h3>
-          )}
-        </div>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete Card</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to delete this image card? This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </CardHeader>
-
-      <CardContent>
-        <div className="space-y-4">
-          {/* Main Image Display */}
-          <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+    <Card className="w-full aspect-square overflow-hidden">
+      <CardContent className="p-0 h-full relative">
+        {/* Main Image Display */}
+        <div className="relative h-full bg-muted overflow-hidden">
             {images.length > 0 ? (
               <>
                 <img
@@ -195,12 +143,64 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
                   alt={`${mapCard.title || 'Image'} - ${selectedImageIndex + 1}`}
                   className="w-full h-full object-cover"
                 />
+                
+                {/* Title overlay */}
+                <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/60 to-transparent z-10">
+                  {isEditing ? (
+                    <div className="flex gap-2">
+                      <Input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Card title"
+                        className="bg-white/90"
+                      />
+                      <Button onClick={handleTitleSave} size="sm">
+                        Save
+                      </Button>
+                      <Button
+                        onClick={() => setIsEditing(false)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <h3
+                        className="text-lg font-semibold text-white cursor-pointer hover:text-orange-300 transition-colors truncate"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        {mapCard.title || 'Untitled Image Card'}
+                      </h3>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="text-white hover:text-orange-300">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Card</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete this image card? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
+                </div>
                 {images.length > 1 && (
                   <>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white z-10"
                       onClick={handlePrevImage}
                     >
                       <ChevronLeft className="w-6 h-6" />
@@ -208,12 +208,12 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white z-10"
                       onClick={handleNextImage}
                     >
                       <ChevronRight className="w-6 h-6" />
                     </Button>
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm z-10">
                       {selectedImageIndex + 1} / {images.length}
                     </div>
                   </>
@@ -224,54 +224,26 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
                 <div className="text-center">
                   <Upload className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p>No images uploaded yet</p>
+                  <label htmlFor={`image-upload-${mapCard.id}`} className="mt-4 inline-block">
+                    <Button variant="outline" disabled={uploading} asChild>
+                      <span>
+                        <Upload className="w-4 h-4 mr-2" />
+                        {uploading ? 'Uploading...' : 'Upload Images'}
+                      </span>
+                    </Button>
+                    <input
+                      id={`image-upload-${mapCard.id}`}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               </div>
             )}
           </div>
-
-          {/* Image Carousel Thumbnails */}
-          {images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImageIndex(idx)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${
-                    selectedImageIndex === idx
-                      ? 'border-orange-500 ring-2 ring-orange-200'
-                      : 'border-transparent hover:border-orange-300'
-                  }`}
-                >
-                  <img
-                    src={img}
-                    alt={`Thumbnail ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Upload Button */}
-          <div className="flex justify-center">
-            <label htmlFor={`image-upload-${mapCard.id}`}>
-              <Button variant="outline" disabled={uploading} asChild>
-                <span>
-                  <Upload className="w-4 h-4 mr-2" />
-                  {uploading ? 'Uploading...' : 'Upload Images'}
-                </span>
-              </Button>
-              <input
-                id={`image-upload-${mapCard.id}`}
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-            </label>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );

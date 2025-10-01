@@ -89,7 +89,7 @@ const DocumentCard = ({ mapCard, onDelete, onUpdate }: DocumentCardProps) => {
   };
 
   return (
-    <Card className="w-full shadow-lg">
+    <Card className="w-full aspect-square shadow-lg flex flex-col">
       <CardHeader className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -152,7 +152,7 @@ const DocumentCard = ({ mapCard, onDelete, onUpdate }: DocumentCardProps) => {
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="flex-1 overflow-auto">
         {isEditing ? (
           <TiptapEditor
             content={content}

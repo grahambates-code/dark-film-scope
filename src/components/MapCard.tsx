@@ -223,72 +223,10 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
   };
 
   return (
-    <Card className="w-full mb-8">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <div className="flex-1">
-          {editingTitle ? (
-            <div className="flex items-center gap-2">
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter card title..."
-                className="text-lg font-semibold"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSaveTitle();
-                  if (e.key === 'Escape') {
-                    setEditingTitle(false);
-                    setTitle(mapCard.title || '');
-                  }
-                }}
-                autoFocus
-              />
-              <Button size="sm" onClick={handleSaveTitle}>Save</Button>
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                onClick={() => {
-                  setEditingTitle(false);
-                  setTitle(mapCard.title || '');
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <CardTitle 
-              className="cursor-pointer hover:text-primary transition-colors"
-              onClick={() => setEditingTitle(true)}
-            >
-              {mapCard.title || 'Untitled Map Card'}
-            </CardTitle>
-          )}
-        </div>
-
-        {user?.id === mapCard.user_id && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <Settings className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setEditingTitle(true)}>
-                Edit Title
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={handleDeleteCard}
-                className="text-destructive focus:text-destructive"
-              >
-                Delete Card
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-      </CardHeader>
-
-      <CardContent className="space-y-6">
+    <Card className="w-full aspect-square overflow-hidden flex flex-col">
+      <CardContent className="p-0 flex-1 flex flex-col relative">
         {/* Map Section */}
-        <div className="relative">
+        <div className="relative flex-1">
           <div 
             className={`relative transition-all duration-200 ${
               isMapActive 
@@ -302,9 +240,71 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
               locationId={mapCard.location_id}
               viewState={viewState}
               onViewStateChange={handleViewStateChange}
-              className="w-full h-[400px] rounded-lg"
+              className="w-full h-full"
               isInteractive={isMapActive}
             />
+            
+            {/* Title overlay */}
+            <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+              {editingTitle ? (
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter card title..."
+                    className="text-lg font-semibold bg-white/90"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveTitle();
+                      if (e.key === 'Escape') {
+                        setEditingTitle(false);
+                        setTitle(mapCard.title || '');
+                      }
+                    }}
+                    autoFocus
+                  />
+                  <Button size="sm" onClick={handleSaveTitle}>Save</Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={() => {
+                      setEditingTitle(false);
+                      setTitle(mapCard.title || '');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <h3 
+                    className="text-lg font-semibold text-white cursor-pointer hover:text-orange-300 transition-colors truncate"
+                    onClick={() => setEditingTitle(true)}
+                  >
+                    {mapCard.title || 'Untitled Map Card'}
+                  </h3>
+                  {user?.id === mapCard.user_id && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="text-white hover:text-orange-300">
+                          <Settings className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setEditingTitle(true)}>
+                          Edit Title
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={handleDeleteCard}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          Delete Card
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
+              )}
+            </div>
             {!isMapActive && (
               <div 
                 className="absolute inset-0 flex items-center justify-center bg-black/10 rounded-lg backdrop-blur-[1px]"
@@ -324,97 +324,6 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
                 ×
               </button>
             )}
-          </div>
-        </div>
-
-        {/* Comments Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium">Comments ({comments.length})</h4>
-            {!commentFormVisible && (
-              <Button
-                onClick={() => setCommentFormVisible(true)}
-                size="sm"
-                variant="outline"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                Add Comment
-              </Button>
-            )}
-          </div>
-
-          {commentFormVisible && (
-            <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <h5 className="text-sm font-medium">Add Comment</h5>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setCommentFormVisible(false);
-                    setNewComment('');
-                  }}
-                  className="h-6 w-6 p-0"
-                >
-                  ×
-                </Button>
-              </div>
-              <TiptapEditor
-                content={newComment}
-                onChange={setNewComment}
-                placeholder="Share your thoughts about this map..."
-                className="min-h-[80px]"
-                viewState={viewState}
-                onViewStateClick={setViewState}
-              />
-              <Button
-                onClick={handleSubmitComment}
-                disabled={!newComment.trim() || submitting}
-                size="sm"
-                className="w-full"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                {submitting ? 'Posting...' : 'Post Comment'}
-              </Button>
-            </div>
-          )}
-
-          {/* Comments List */}
-          <div className="space-y-3 max-h-60 overflow-y-auto">
-            {comments.map((comment) => (
-              <Card key={comment.id} className="bg-background/50 group hover:bg-background/70 transition-colors">
-                <CardContent className="p-3 relative">
-                  {user?.id === comment.user_id && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteComment(comment.id)}
-                      className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  )}
-                  
-                  <div className="flex items-start gap-2">
-                    <User className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium text-card-foreground truncate">
-                          {comment.profiles?.display_name || 'Anonymous User'}
-                        </span>
-                        <Badge variant="secondary" className="text-xs">
-                          {formatRelativeTime(comment.created_at)}
-                        </Badge>
-                      </div>
-                      <CommentRenderer
-                        content={comment.content}
-                        onViewStateClick={setViewState}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </CardContent>
