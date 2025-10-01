@@ -135,9 +135,9 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
 
   return (
     <Card className="w-full aspect-square overflow-hidden">
-      <CardContent className="p-0 h-full relative" ref={containerRef}>
+      <CardContent className="p-0 h-full relative">
         {/* Main Image Display */}
-        <div className="relative h-full bg-muted overflow-hidden">
+        <div className="relative h-full bg-muted overflow-hidden" ref={containerRef}>
             {images.length > 0 ? (
               <>
                 <img

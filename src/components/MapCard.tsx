@@ -226,9 +226,9 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
 
   return (
     <Card className="w-full aspect-square overflow-hidden flex flex-col">
-      <CardContent className="p-0 flex-1 flex flex-col relative" ref={containerRef}>
+      <CardContent className="p-0 flex-1 flex flex-col relative">
         {/* Map Section */}
-        <div className="relative flex-1">
+        <div className="relative flex-1" ref={containerRef}>
           <div 
             className={`relative transition-all duration-200 ${
               isMapActive 
