@@ -327,10 +327,10 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
               </button>
             )}
           </div>
+          
+          {/* Sub Cards Overlay */}
+          <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
         </div>
-
-        {/* Sub Cards Overlay */}
-        <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
       </CardContent>
     </Card>
   );

@@ -245,10 +245,10 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
                 </div>
               </div>
             )}
+            
+            {/* Sub Cards Overlay */}
+            <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
           </div>
-
-        {/* Sub Cards Overlay */}
-        <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
       </CardContent>
     </Card>
   );
