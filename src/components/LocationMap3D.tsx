@@ -35,6 +35,17 @@ const LocationMap3D = ({
   
   // Generate a stable ID for this instance
   const instanceId = useRef(`deck-${locationId}-${Math.random().toString(36).substr(2, 9)}`).current;
+  
+  // Store refs to avoid stale closures
+  const registerRef = useRef(registerInstance);
+  const unregisterRef = useRef(unregisterInstance);
+  const canMountRef = useRef(canMount);
+  
+  useEffect(() => {
+    registerRef.current = registerInstance;
+    unregisterRef.current = unregisterInstance;
+    canMountRef.current = canMount;
+  }, [registerInstance, unregisterInstance, canMount]);
 
   // Intersection Observer to detect visibility
   useEffect(() => {
@@ -47,18 +58,24 @@ const LocationMap3D = ({
           setIsVisible(visible);
           updateVisibility(instanceId, visible);
 
-          // If visible and can mount, register and mount
-          if (visible && canMount(instanceId)) {
-            const registered = registerInstance(instanceId);
-            if (registered) {
-              setShouldMount(true);
+          if (visible) {
+            // If visible and can mount, register and mount
+            if (canMountRef.current(instanceId)) {
+              const registered = registerRef.current(instanceId);
+              if (registered) {
+                setShouldMount(true);
+              }
             }
+          } else {
+            // If not visible, unmount to free up slot
+            setShouldMount(false);
+            unregisterRef.current(instanceId);
           }
         });
       },
       {
         threshold: 0.1, // Trigger when 10% visible
-        rootMargin: '100px' // Start loading slightly before fully visible
+        rootMargin: '50px' // Start loading slightly before fully visible
       }
     );
 
@@ -66,19 +83,19 @@ const LocationMap3D = ({
 
     return () => {
       observer.disconnect();
-      unregisterInstance(instanceId);
+      unregisterRef.current(instanceId);
     };
-  }, [instanceId, registerInstance, unregisterInstance, updateVisibility, canMount]);
+  }, [instanceId, updateVisibility]);
 
   // Manual load handler
   const handleManualLoad = useCallback(() => {
-    if (canMount(instanceId)) {
-      const registered = registerInstance(instanceId);
+    if (canMountRef.current(instanceId)) {
+      const registered = registerRef.current(instanceId);
       if (registered) {
         setShouldMount(true);
       }
     }
-  }, [instanceId, registerInstance, canMount]);
+  }, [instanceId]);
 
   // ✅ Memoize the layer so it's only created when needed
   const layers = useMemo(() => [

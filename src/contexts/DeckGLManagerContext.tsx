@@ -22,7 +22,7 @@ export const DeckGLManagerProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const canMount = useCallback((id: string) => {
     return mountedInstances.has(id) || mountedInstances.size < MAX_INSTANCES;
-  }, [mountedInstances]);
+  }, [mountedInstances.size]);
 
   const registerInstance = useCallback((id: string): boolean => {
     if (mountedInstances.has(id)) {
