@@ -64,14 +64,12 @@ const SubCardsOverlay = ({ parentCardId, containerRef }: SubCardsOverlayProps) =
     if (!user || !containerRef.current) return;
 
     try {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const size = type === 'text' ? 150 : 120;
+      // Use percentages (20-30% of parent size)
+      const sizePercent = type === 'text' ? 25 : 20;
       
-      // Random position within container
-      const maxX = containerRect.width - size;
-      const maxY = containerRect.height - size;
-      const randomX = Math.random() * Math.max(0, maxX);
-      const randomY = Math.random() * Math.max(0, maxY);
+      // Random position (10-70% range)
+      const randomX = 10 + Math.random() * 60;
+      const randomY = 10 + Math.random() * 60;
 
       const colors = ['#fef3c7', '#dbeafe', '#fce7f3', '#dcfce7', '#e0e7ff'];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -85,8 +83,8 @@ const SubCardsOverlay = ({ parentCardId, containerRef }: SubCardsOverlayProps) =
           content: type === 'text' ? 'New note' : null,
           position_x: randomX,
           position_y: randomY,
-          width: size,
-          height: size,
+          width: sizePercent,
+          height: sizePercent,
           z_index: subCards.length,
           background_color: type === 'color' ? randomColor : type === 'text' ? '#fef3c7' : '#ffffff'
         })

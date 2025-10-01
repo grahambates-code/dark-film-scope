@@ -11,10 +11,10 @@ interface SubCardProps {
     user_id: string;
     content_type: 'text' | 'image' | 'color';
     content: string | null;
-    position_x: number;
-    position_y: number;
-    width: number;
-    height: number;
+    position_x: number; // Percentage 0-100
+    position_y: number; // Percentage 0-100
+    width: number; // Percentage 0-100
+    height: number; // Percentage 0-100
     z_index: number;
     background_color: string | null;
   };
@@ -28,11 +28,36 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
   const [isDragging, setIsDragging] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(subCard.content || '');
-  const [position, setPosition] = useState({ x: subCard.position_x, y: subCard.position_y });
+  const [positionPercent, setPositionPercent] = useState({ 
+    x: subCard.position_x, 
+    y: subCard.position_y 
+  });
   const dragStart = useRef({ x: 0, y: 0 });
   const subCardRef = useRef<HTMLDivElement>(null);
 
   const isOwner = user?.id === subCard.user_id;
+
+  // Convert percentages to pixels for rendering
+  const getPixelPosition = () => {
+    if (!containerRef.current) return { x: 0, y: 0 };
+    const containerRect = containerRef.current.getBoundingClientRect();
+    return {
+      x: (positionPercent.x / 100) * containerRect.width,
+      y: (positionPercent.y / 100) * containerRect.height
+    };
+  };
+
+  const getPixelSize = () => {
+    if (!containerRef.current) return { width: 0, height: 0 };
+    const containerRect = containerRef.current.getBoundingClientRect();
+    return {
+      width: (subCard.width / 100) * containerRect.width,
+      height: (subCard.height / 100) * containerRect.height
+    };
+  };
+
+  const pixelPosition = getPixelPosition();
+  const pixelSize = getPixelSize();
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isOwner || isEditing) return;
@@ -40,9 +65,10 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
     e.stopPropagation();
     
     setIsDragging(true);
+    const currentPixelPos = getPixelPosition();
     dragStart.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y
+      x: e.clientX - currentPixelPos.x,
+      y: e.clientY - currentPixelPos.y
     };
   };
 
@@ -51,26 +77,29 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
       if (!isDragging || !containerRef.current) return;
 
       const containerRect = containerRef.current.getBoundingClientRect();
-      const subCardWidth = subCard.width;
-      const subCardHeight = subCard.height;
+      const pixelWidth = (subCard.width / 100) * containerRect.width;
+      const pixelHeight = (subCard.height / 100) * containerRect.height;
 
       let newX = e.clientX - dragStart.current.x;
       let newY = e.clientY - dragStart.current.y;
 
       // Constrain to container bounds
-      newX = Math.max(0, Math.min(newX, containerRect.width - subCardWidth));
-      newY = Math.max(0, Math.min(newY, containerRect.height - subCardHeight));
+      newX = Math.max(0, Math.min(newX, containerRect.width - pixelWidth));
+      newY = Math.max(0, Math.min(newY, containerRect.height - pixelHeight));
 
-      setPosition({ x: newX, y: newY });
+      // Convert to percentages
+      const percentX = (newX / containerRect.width) * 100;
+      const percentY = (newY / containerRect.height) * 100;
+
+      setPositionPercent({ x: percentX, y: percentY });
     };
 
     const handleMouseUp = () => {
       if (isDragging) {
         setIsDragging(false);
-        // Save position to database
         onUpdate(subCard.id, {
-          position_x: position.x,
-          position_y: position.y
+          position_x: positionPercent.x,
+          position_y: positionPercent.y
         });
       }
     };
@@ -84,7 +113,7 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, position, onUpdate, subCard.id, subCard.width, subCard.height, containerRef]);
+  }, [isDragging, positionPercent, onUpdate, subCard.id, subCard.width, subCard.height, containerRef]);
 
   const handleSaveEdit = () => {
     onUpdate(subCard.id, { content: editContent });
@@ -152,10 +181,10 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
         isDragging ? 'shadow-2xl cursor-grabbing' : isOwner ? 'cursor-grab hover:shadow-xl' : ''
       } ${isOwner ? 'group' : ''}`}
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        width: `${subCard.width}px`,
-        height: `${subCard.height}px`,
+        left: `${pixelPosition.x}px`,
+        top: `${pixelPosition.y}px`,
+        width: `${pixelSize.width}px`,
+        height: `${pixelSize.height}px`,
         zIndex: subCard.z_index + 10,
         backgroundColor: subCard.background_color || '#ffffff',
       }}
