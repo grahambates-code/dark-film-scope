@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/components/AuthProvider';
 
+// Allow sub-cards to extend 20% beyond parent container bounds
+const OVERFLOW_MARGIN = 0.2;
+
 interface SubCardProps {
   subCard: {
     id: string;
@@ -84,11 +87,13 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
       let newX = e.clientX - containerRect.left - dragStart.current.x;
       let newY = e.clientY - containerRect.top - dragStart.current.y;
 
-      // Constrain to container bounds
-      newX = Math.max(0, Math.min(newX, containerRect.width - pixelWidth));
-      newY = Math.max(0, Math.min(newY, containerRect.height - pixelHeight));
+      // Allow overflow: constrain with margin beyond container bounds
+      const overflowX = containerRect.width * OVERFLOW_MARGIN;
+      const overflowY = containerRect.height * OVERFLOW_MARGIN;
+      newX = Math.max(-overflowX, Math.min(newX, containerRect.width + overflowX - pixelWidth));
+      newY = Math.max(-overflowY, Math.min(newY, containerRect.height + overflowY - pixelHeight));
 
-      // Convert to percentages
+      // Convert to percentages (can now be negative or > 100)
       const percentX = (newX / containerRect.width) * 100;
       const percentY = (newY / containerRect.height) * 100;
 

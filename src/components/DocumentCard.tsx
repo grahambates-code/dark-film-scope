@@ -154,7 +154,7 @@ const DocumentCard = ({ mapCard, onDelete, onUpdate }: DocumentCardProps) => {
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 overflow-auto relative" ref={containerRef}>
+      <CardContent className="flex-1 overflow-visible relative" ref={containerRef}>
         {isEditing ? (
           <TiptapEditor
             content={content}
