@@ -92,6 +92,30 @@ const LocationMap3D = ({
       }
       
       toast.success('Camera position saved successfully!');
+      
+      // Capture canvas and open in new tab
+      if (deckRef.current) {
+        // @ts-ignore - accessing deck instance
+        const deck = deckRef.current.deck;
+        if (deck && deck.canvas) {
+          deck.canvas.toBlob((blob: Blob | null) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const newTab = window.open();
+              if (newTab) {
+                newTab.document.write(`
+                  <html>
+                    <head><title>Map Capture</title></head>
+                    <body style="margin:0;display:flex;justify-content:center;align-items:center;background:#000;">
+                      <img src="${url}" style="max-width:100%;max-height:100vh;" />
+                    </body>
+                  </html>
+                `);
+              }
+            }
+          });
+        }
+      }
     } catch (error) {
       console.error('Error saving viewstate:', error);
       toast.error('Failed to save camera position. Please try again.');
