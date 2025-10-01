@@ -8,13 +8,15 @@ import Index from "./pages/Index";
 import LocationDetails from "./pages/LocationDetails";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/components/AuthProvider";
+import { DeckGLManagerProvider } from "@/contexts/DeckGLManagerContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
+      <DeckGLManagerProvider>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -25,7 +27,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-      </TooltipProvider>
+        </TooltipProvider>
+      </DeckGLManagerProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

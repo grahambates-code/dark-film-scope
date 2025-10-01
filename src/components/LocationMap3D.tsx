@@ -7,6 +7,8 @@ import { Save, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useDeckGLManager } from '@/contexts/DeckGLManagerContext';
+import MapPlaceholder from '@/components/MapPlaceholder';
 
 interface LocationMap3DProps {
   locationId: string;
@@ -24,8 +26,59 @@ const LocationMap3D = ({
                          isInteractive = true
                        }: LocationMap3DProps) => {
   const deckRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldMount, setShouldMount] = useState(false);
+  const { registerInstance, unregisterInstance, updateVisibility, canMount } = useDeckGLManager();
+  
+  // Generate a stable ID for this instance
+  const instanceId = useRef(`deck-${locationId}-${Math.random().toString(36).substr(2, 9)}`).current;
+
+  // Intersection Observer to detect visibility
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const visible = entry.isIntersecting;
+          setIsVisible(visible);
+          updateVisibility(instanceId, visible);
+
+          // If visible and can mount, register and mount
+          if (visible && canMount(instanceId)) {
+            const registered = registerInstance(instanceId);
+            if (registered) {
+              setShouldMount(true);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.1, // Trigger when 10% visible
+        rootMargin: '100px' // Start loading slightly before fully visible
+      }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+      unregisterInstance(instanceId);
+    };
+  }, [instanceId, registerInstance, unregisterInstance, updateVisibility, canMount]);
+
+  // Manual load handler
+  const handleManualLoad = useCallback(() => {
+    if (canMount(instanceId)) {
+      const registered = registerInstance(instanceId);
+      if (registered) {
+        setShouldMount(true);
+      }
+    }
+  }, [instanceId, registerInstance, canMount]);
 
   // ✅ Memoize the layer so it's only created when needed
   const layers = useMemo(() => [
@@ -154,8 +207,12 @@ const LocationMap3D = ({
   };
 
   return (
-      <div className={`bg-white relative ${className}`} style={{ height: '500px', width: '100%' }}>
-        <DeckGL
+      <div ref={containerRef} className={`bg-white relative ${className}`} style={{ height: '500px', width: '100%' }}>
+        {!shouldMount ? (
+          <MapPlaceholder onLoad={handleManualLoad} className={className} />
+        ) : (
+          <>
+            <DeckGL
             ref={deckRef}
             layers={layers}
             viewState={
@@ -197,10 +254,12 @@ const LocationMap3D = ({
           <Save className="w-4 h-4" />
         </Button>
 
-        {/* Location info overlay */}
-        <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded text-sm">
-          Lat: {viewState.latitude?.toFixed(4)}, Lng: {viewState.longitude?.toFixed(4)}
-        </div>
+            {/* Location info overlay */}
+            <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded text-sm">
+              Lat: {viewState.latitude?.toFixed(4)}, Lng: {viewState.longitude?.toFixed(4)}
+            </div>
+          </>
+        )}
       </div>
   );
 };
