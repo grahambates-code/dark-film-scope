@@ -3,7 +3,7 @@ import DeckGL from '@deck.gl/react';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
 import type { MapViewState } from '@deck.gl/core';
-import { Save } from 'lucide-react';
+import { Save, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -128,6 +128,31 @@ const LocationMap3D = ({
     saveViewState();
   };
 
+  const captureCanvas = () => {
+    if (deckRef.current) {
+      // @ts-ignore - accessing deck instance
+      const deck = deckRef.current.deck;
+      if (deck && deck.canvas) {
+        deck.canvas.toBlob((blob: Blob | null) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const newTab = window.open();
+            if (newTab) {
+              newTab.document.write(`
+                <html>
+                  <head><title>Map Capture</title></head>
+                  <body style="margin:0;display:flex;justify-content:center;align-items:center;background:#000;">
+                    <img src="${url}" style="max-width:100%;max-height:100vh;" />
+                  </body>
+                </html>
+              `);
+            }
+          }
+        });
+      }
+    }
+  };
+
   return (
       <div className={`bg-white relative ${className}`} style={{ height: '500px', width: '100%' }}>
         <DeckGL
@@ -150,6 +175,16 @@ const LocationMap3D = ({
             onDragStart={() => setIsInteracting(true)}
             onDragEnd={() => setIsInteracting(false)}
         />
+
+        {/* Capture button */}
+        <Button
+          onClick={captureCanvas}
+          size="sm"
+          className="absolute bottom-4 right-14 h-8 w-8 p-0"
+          title="Capture canvas as image"
+        >
+          <Camera className="w-4 h-4" />
+        </Button>
 
         {/* Save button */}
         <Button
