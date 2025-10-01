@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { User, Send, Trash2, Settings } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,6 +10,7 @@ import { useAuth } from '@/components/AuthProvider';
 import TiptapEditor from '@/components/TiptapEditor';
 import CommentRenderer from '@/components/CommentRenderer';
 import LocationMap3D from '@/components/LocationMap3D';
+import SubCardsOverlay from '@/components/SubCardsOverlay';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface MapCardData {
@@ -41,6 +42,7 @@ interface MapCardProps {
 
 const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
   const { user } = useAuth();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -224,7 +226,7 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
 
   return (
     <Card className="w-full aspect-square overflow-hidden flex flex-col">
-      <CardContent className="p-0 flex-1 flex flex-col relative">
+      <CardContent className="p-0 flex-1 flex flex-col relative" ref={containerRef}>
         {/* Map Section */}
         <div className="relative flex-1">
           <div 
@@ -326,6 +328,9 @@ const MapCard = ({ mapCard, onDelete, onUpdate }: MapCardProps) => {
             )}
           </div>
         </div>
+
+        {/* Sub Cards Overlay */}
+        <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
       </CardContent>
     </Card>
   );

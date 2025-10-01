@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Trash2, Save, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import TiptapEditor from './TiptapEditor';
+import SubCardsOverlay from './SubCardsOverlay';
 
 interface DocumentCardProps {
   mapCard: {
@@ -22,6 +23,7 @@ interface DocumentCardProps {
 }
 
 const DocumentCard = ({ mapCard, onDelete, onUpdate }: DocumentCardProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(mapCard.title || 'Untitled Document');
   const [content, setContent] = useState(mapCard.content || '');
@@ -152,7 +154,7 @@ const DocumentCard = ({ mapCard, onDelete, onUpdate }: DocumentCardProps) => {
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 overflow-auto">
+      <CardContent className="flex-1 overflow-auto relative" ref={containerRef}>
         {isEditing ? (
           <TiptapEditor
             content={content}
@@ -164,6 +166,9 @@ const DocumentCard = ({ mapCard, onDelete, onUpdate }: DocumentCardProps) => {
             <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
         )}
+        
+        {/* Sub Cards Overlay */}
+        <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
       </CardContent>
     </Card>
   );

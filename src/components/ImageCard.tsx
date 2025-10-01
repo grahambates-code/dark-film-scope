@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Trash2, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { toast } from 'sonner';
+import SubCardsOverlay from '@/components/SubCardsOverlay';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,6 +37,7 @@ interface ImageCardProps {
 
 const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
   const { user } = useAuth();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(mapCard.title || '');
   const [images, setImages] = useState<string[]>(mapCard.images || []);
@@ -133,7 +135,7 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
 
   return (
     <Card className="w-full aspect-square overflow-hidden">
-      <CardContent className="p-0 h-full relative">
+      <CardContent className="p-0 h-full relative" ref={containerRef}>
         {/* Main Image Display */}
         <div className="relative h-full bg-muted overflow-hidden">
             {images.length > 0 ? (
@@ -244,6 +246,9 @@ const ImageCard = ({ mapCard, onDelete, onUpdate }: ImageCardProps) => {
               </div>
             )}
           </div>
+
+        {/* Sub Cards Overlay */}
+        <SubCardsOverlay parentCardId={mapCard.id} containerRef={containerRef} />
       </CardContent>
     </Card>
   );

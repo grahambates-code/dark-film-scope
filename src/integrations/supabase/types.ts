@@ -231,6 +231,62 @@ export type Database = {
         }
         Relationships: []
       }
+      sub_cards: {
+        Row: {
+          background_color: string | null
+          content: string | null
+          content_type: string
+          created_at: string
+          height: number
+          id: string
+          parent_card_id: string
+          position_x: number
+          position_y: number
+          updated_at: string
+          user_id: string
+          width: number
+          z_index: number
+        }
+        Insert: {
+          background_color?: string | null
+          content?: string | null
+          content_type: string
+          created_at?: string
+          height?: number
+          id?: string
+          parent_card_id: string
+          position_x?: number
+          position_y?: number
+          updated_at?: string
+          user_id: string
+          width?: number
+          z_index?: number
+        }
+        Update: {
+          background_color?: string | null
+          content?: string | null
+          content_type?: string
+          created_at?: string
+          height?: number
+          id?: string
+          parent_card_id?: string
+          position_x?: number
+          position_y?: number
+          updated_at?: string
+          user_id?: string
+          width?: number
+          z_index?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_cards_parent_card_id_fkey"
+            columns: ["parent_card_id"]
+            isOneToOne: false
+            referencedRelation: "map_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
