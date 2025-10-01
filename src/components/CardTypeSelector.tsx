@@ -1,9 +1,9 @@
-import { Map, Image, X } from 'lucide-react';
+import { Map, Image, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface CardTypeSelectorProps {
-  onSelectType: (type: 'map' | 'image') => void;
+  onSelectType: (type: 'map' | 'image' | 'document') => void;
   onCancel: () => void;
 }
 
@@ -23,7 +23,7 @@ const CardTypeSelector = ({ onSelectType, onCancel }: CardTypeSelectorProps) => 
           </Button>
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <Button
             variant="outline"
             onClick={() => onSelectType('map')}
@@ -40,6 +40,15 @@ const CardTypeSelector = ({ onSelectType, onCancel }: CardTypeSelectorProps) => 
           >
             <Image className="h-8 w-8 text-orange-600" />
             <span className="font-medium">Image Card</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={() => onSelectType('document')}
+            className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-orange-50 hover:border-orange-300 transition-colors"
+          >
+            <FileText className="h-8 w-8 text-orange-600" />
+            <span className="font-medium">Document</span>
           </Button>
         </div>
         

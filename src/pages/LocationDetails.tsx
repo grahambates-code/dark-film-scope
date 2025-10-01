@@ -8,6 +8,7 @@ import AuthForm from '@/components/AuthForm';
 import { AppHeader } from '@/components/AppHeader';
 import MapCard from '@/components/MapCard';
 import ImageCard from '@/components/ImageCard';
+import DocumentCard from '@/components/DocumentCard';
 import CardTypeSelector from '@/components/CardTypeSelector';
 
 interface Location {
@@ -36,8 +37,9 @@ interface MapCardData {
   user_id: string;
   created_at: string;
   updated_at: string;
-  card_type?: 'map' | 'image' | null;
+  card_type?: 'map' | 'image' | 'document' | null;
   images?: string[];
+  content?: string | null;
 }
 const LocationDetails = () => {
   const { locationId } = useParams<{ locationId: string }>();
@@ -91,8 +93,9 @@ const LocationDetails = () => {
       if (mapCardsError) throw mapCardsError;
       setMapCards((mapCardsData || []).map(card => ({
         ...card,
-        card_type: card.card_type as 'map' | 'image' | null,
-        images: Array.isArray(card.images) ? card.images as string[] : []
+        card_type: card.card_type as 'map' | 'image' | 'document' | null,
+        images: Array.isArray(card.images) ? card.images as string[] : [],
+        content: card.content || null
       })));
 
     } catch (error) {
@@ -148,7 +151,7 @@ const LocationDetails = () => {
     }
   };
 
-  const handleSelectCardType = async (cardId: string, cardType: 'map' | 'image') => {
+  const handleSelectCardType = async (cardId: string, cardType: 'map' | 'image' | 'document') => {
     // Update the card type locally
     setMapCards(prev => prev.map(card => 
       card.id === cardId ? { ...card, card_type: cardType } : card
@@ -156,10 +159,16 @@ const LocationDetails = () => {
     
     // Update title and card_type based on type
     try {
+      const titleMap = {
+        map: 'New Map Card',
+        image: 'New Image Card',
+        document: 'New Document'
+      };
+      
       const { error } = await supabase
         .from('map_cards')
         .update({ 
-          title: cardType === 'map' ? 'New Map Card' : 'New Image Card',
+          title: titleMap[cardType],
           card_type: cardType
         })
         .eq('id', cardId);
@@ -246,8 +255,14 @@ const LocationDetails = () => {
                   onDelete={handleDeleteCard}
                   onUpdate={handleUpdateCard}
                 />
-              ) : (
+              ) : mapCard.card_type === 'image' ? (
                 <ImageCard
+                  mapCard={mapCard}
+                  onDelete={handleDeleteCard}
+                  onUpdate={handleUpdateCard}
+                />
+              ) : (
+                <DocumentCard
                   mapCard={mapCard}
                   onDelete={handleDeleteCard}
                   onUpdate={handleUpdateCard}
