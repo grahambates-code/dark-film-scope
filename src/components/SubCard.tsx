@@ -60,15 +60,16 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
   const pixelSize = getPixelSize();
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!isOwner || isEditing) return;
+    if (!isOwner || isEditing || !containerRef.current) return;
     e.preventDefault();
     e.stopPropagation();
     
     setIsDragging(true);
+    const containerRect = containerRef.current.getBoundingClientRect();
     const currentPixelPos = getPixelPosition();
     dragStart.current = {
-      x: e.clientX - currentPixelPos.x,
-      y: e.clientY - currentPixelPos.y
+      x: e.clientX - containerRect.left - currentPixelPos.x,
+      y: e.clientY - containerRect.top - currentPixelPos.y
     };
   };
 
@@ -80,8 +81,8 @@ const SubCard = ({ subCard, onUpdate, onDelete, containerRef }: SubCardProps) =>
       const pixelWidth = (subCard.width / 100) * containerRect.width;
       const pixelHeight = (subCard.height / 100) * containerRect.height;
 
-      let newX = e.clientX - dragStart.current.x;
-      let newY = e.clientY - dragStart.current.y;
+      let newX = e.clientX - containerRect.left - dragStart.current.x;
+      let newY = e.clientY - containerRect.top - dragStart.current.y;
 
       // Constrain to container bounds
       newX = Math.max(0, Math.min(newX, containerRect.width - pixelWidth));
